@@ -1,0 +1,52 @@
+diff --git a/auto/cc/name b/auto/cc/name
+index ded93f5bc9..07af3ca2c0 100644
+--- a/auto/cc/name
++++ b/auto/cc/name
+@@ -10,7 +10,7 @@ if [ "$NGX_PLATFORM" != win32 ]; then
+     ngx_feature_run=yes
+     ngx_feature_incs=
+     ngx_feature_path=
+-    ngx_feature_libs=
++    ngx_feature_libs=-static
+     ngx_feature_test=
+     . auto/feature
+
+diff --git a/auto/include b/auto/include
+index c1bd3647b8..d90853cab0 100644
+--- a/auto/include
++++ b/auto/include
+@@ -27,7 +27,7 @@ int main(void) {
+ END
+
+
+-ngx_test="$CC -o $NGX_AUTOTEST $NGX_AUTOTEST.c"
++ngx_test="$CC -pie -o $NGX_AUTOTEST $NGX_AUTOTEST.c"
+
+ eval "$ngx_test >> $NGX_AUTOCONF_ERR 2>&1"
+
+diff --git a/auto/os/linux b/auto/os/linux
+index 2c8a9bb8e3..f77d3fad3c 100644
+--- a/auto/os/linux
++++ b/auto/os/linux
+@@ -37,7 +37,8 @@ fi
+ ngx_feature="epoll"
+ ngx_feature_name="NGX_HAVE_EPOLL"
+ ngx_feature_run=yes
+-ngx_feature_incs="#include <sys/epoll.h>"
++ngx_feature_incs="#include <sys/epoll.h>
++                  #include <stddef.h>"
+ ngx_feature_path=
+ ngx_feature_libs=
+ ngx_feature_test="int efd = 0;
+diff --git a/src/os/unix/ngx_process_cycle.c b/src/os/unix/ngx_process_cycle.c
+index 5817a2c23b..76d3fdf76e 100644
+--- a/src/os/unix/ngx_process_cycle.c
++++ b/src/os/unix/ngx_process_cycle.c
+@@ -5,6 +5,7 @@
+  */
+
+
++#include <sys/prctl.h>
+ #include <ngx_config.h>
+ #include <ngx_core.h>
+ #include <ngx_event.h>

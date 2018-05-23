@@ -1,0 +1,171 @@
+#!/bin/sh
+NGINX=1.15.1
+NJS=0.2.2
+MUSL=1.1.19
+JMLC=5.1.0
+PCRE=8.42
+ZLIB=1.2.11
+LIBRESSL=2.7.4
+
+# libpcreposix only, jemalloc, libatomic
+# PC Files???
+
+set -e
+hash tar gzip sed make cmake ninja patch
+hash curl && _DL='curl -OL'
+hash wget && _DL=wget
+[ -n "$_DL" ]
+
+_CC=$(readlink -f $(which ${CC:-cc}))
+
+echo ___COMPILER___
+$_CC --version
+
+export CFLAGS='-march=native -O3 -pipe'
+
+echo Checking whether the compiler supports “-fstack-protector-strong”…
+echo 'int main() { return 0; }' | $_CC -fsyntax-only -fstack-protector-strong -xc - && CFLAGS="$CFLAGS -fstack-protector-strong"
+echo
+
+echo Detecting which compiler is under use…
+case $(basename $_CC) in
+	clang*) _CC=clang && CFLAGS="$CFLAGS -Wno-unused-command-line-argument";;
+	*gcc*) _CC=gcc   ;; # Asterix at start: x86_64-linux-gnu-gcc-8
+	*) echo Unsupported compiler \`$_CC\' && exit 1
+esac
+
+_root=$PWD
+
+mkdir -p /opt/src
+cd /opt/src
+
+# Gathering all the dependencies
+# EPOLLEXCLUSIVE not available : Linux4.5 / glibc2.24
+# reuseport is available : Linux3.9+
+$_DL https://www.musl-libc.org/releases/musl-$MUSL.tar.gz
+$_DL https://codeload.github.com/sabotage-linux/kernel-headers/tar.gz/master
+$_DL https://raw.githubusercontent.com/concatime/nginx-zero/master/jemalloc-$JMLC.tar.gz
+$_DL https://ftp.pcre.org/pub/pcre/pcre-$PCRE.tar.gz
+$_DL https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-$LIBRESSL.tar.gz
+$_DL https://www.zlib.net/zlib-$ZLIB.tar.gz
+$_DL https://nginx.org/download/nginx-$NGINX.tar.gz
+#$_DLhttps://hg.nginx.org/njs/archive/$NJS.tar.gz
+$_DL https://github.com/nginx/njs/archive/$NJS.tar.gz
+$_DL https://raw.githubusercontent.com/concatime/nginx-zero/master/dot.patch
+
+for _f in master *.tar.gz
+do  tar xzf $_f
+done
+
+# MUSL
+cd  musl-$MUSL
+#sed -i 's|-std=c99|-std=c11|' Makefile
+./configure --prefix=/opt --enable-wrapper=$_CC #--enable-warnings
+make install -j`nproc`
+cd -
+
+# Headers are required for LibreSSL & nginx
+cd kernel-headers-master
+make ARCH=x86_64 DESTDIR=/opt prefix= install
+cd -
+
+export CC=/opt/bin/musl-$_CC LDFLAGS=-static
+
+cd jemalloc-$JMLC
+./configure --prefix=/opt --disable-cxx
+make install_lib_static
+cd -
+
+# PCRE
+cd pcre-$PCRE
+./configure --prefix=/opt --enable-jit --enable-utf --enable-unicode-properties --disable-cpp --enable-shared=0
+make install-binSCRIPTS install-libLTLIBRARIES install-nodist_includeHEADERS # The bin is required for njs
+# pkgconfigDATA includeHEADERS=pcreposix
+cd -
+
+# LIBRESSL
+cd libressl-$LIBRESSL
+cmake -GNinja -DCMAKE_INSTALL_PREFIX=/opt
+ninja
+ninja test
+ninja install
+cd -
+
+# ZLIB
+cd zlib-$ZLIB
+cmake -GNinja -DCMAKE_INSTALL_PREFIX=/opt
+ninja zlibstatic
+cp libz.a /opt/lib
+cp zlib.h zconf.h /opt/include
+cd -
+
+# NJS
+cd njs-$NJS/nxt/auto
+sed -i '22i #include <stddef.h>' pcre
+sed -i 's|pcre-|/opt/bin/pcre-|' pcre
+sed -i 's/-o/-static -o/'     feature
+cd -
+
+# Hack to let find ssl library
+[ -d ../local ] && mv ../local ../local.backup
+[ -L ../local ] || ln -s . ../local
+
+# NGINX
+cd nginx-$NGINX
+patch -p1 <../dot.patch
+./configure \
+	--prefix=/opt/nginx \
+	--pid-path=/run/nginx.pid \
+	--sbin-path=bin/nginx \
+	--modules-path=modules \
+	--conf-path=conf/nginx.conf \
+	--error-log-path=logs/error.log \
+	--lock-path=logs/nginx.lock \
+	--group=www-data \
+	--add-module=../njs-$NJS/nginx \
+	--build="nginx/$NGINX (nginx-zero)" \
+	--with-compat \
+	--with-stream \
+	--with-threads \
+	--with-file-aio \
+	--with-http_v2_module \
+	--with-http_ssl_module \
+	--with-stream_ssl_module \
+	--without-http_userid_module \
+	--without-http_access_module \
+	--without-http_auth_basic_module \
+	--without-http_autoindex_module \
+	--without-http_geo_module \
+	--without-http_map_module \
+	--without-http_split_clients_module \
+	--without-http_fastcgi_module \
+	--without-http_uwsgi_module \
+	--without-http_scgi_module \
+	--without-http_browser_module \
+	--without-http_upstream_hash_module \
+	--without-http_upstream_ip_hash_module \
+	--without-http_upstream_least_conn_module \
+	--without-http_upstream_keepalive_module \
+	--without-http_upstream_zone_module \
+	--without-select_module \
+	--without-poll_module \
+	--without-mail_pop3_module \
+	--without-mail_imap_module \
+	--without-mail_smtp_module \
+	--without-stream_limit_conn_module \
+	--without-stream_access_module \
+	--without-stream_geo_module \
+	--without-stream_map_module \
+	--without-stream_split_clients_module \
+	--without-stream_return_module \
+	--without-stream_upstream_hash_module \
+	--without-stream_upstream_least_conn_module \
+	--without-stream_upstream_zone_module \
+	--with-cc-opt='-g -O2 -ffunction-sections -fdata-sections --param=ssp-buffer-size=4 -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security' \
+	--with-ld-opt='-static -Wl,-Bsymbolic-functions,--gc-sections,--as-needed,-s,-z,relro,-z,now'
+	#--with-cpu-opt
+	# THE CONFIG FILE DOES NOT CONSIDER LDFLAGS
+make install -j`nproc`
+cd -
+tar cf $_root/nginx.tar.gz -C.. nginx
+rm -fR $PWD
