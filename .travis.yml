@@ -1,0 +1,33 @@
+sudo: false
+language: c
+git:
+  depth: false
+# submodules: false
+addons:
+  apt:
+    update: true
+    config:
+      retries: true
+    sources:
+    - ubuntu-toolchain-r-test
+    - llvm-toolchain-trusty-6.0
+    packages:
+    - gcc-{4.4,8}
+    - clang-{3.5,6.0}
+    - ninja-build
+compiler:
+- gcc-8
+- clang-6.0
+- gcc-4.4
+- clang-3.5
+script: "./nginx-zero"
+deploy:
+  provider: releases
+  api_key:
+    secure: HhJjsCMB+fb6FSovotxE0vkfU1aYdgS1+HlB08TXb6GVCKQ0fMUlKp2tyFNZQ+BH3b4CIze3nM6FcD08uM5EUGN+RgpkxWaCNtROu10V2ZR/IzaJ6dhOmV05AQEvruW2Zwval/3ArvgK06RL162MPJxg7irrv1yeQLxgH4QOY+Y30TddYnn+4WaioGuft/P1HG94hX6xx+pRei/XZPv6ijLbmYClfQ66ugA5bnRDGlLR0BjMOj/pKDFgmRIiJHs5eNGdox9+Gpk86AyhaWJgxQA1nVmmhKBl9okTd8eZ50Z6h+XOb76znXDEsnHiTsYL/f6Y1FL1WU9OF43Q+DTXW7YT2dpJABiXu3xCuQoGSXOKE8yDgJQCz84iSOrQ3VoGbl0Ipedr3BhF57uMojGvUFISqVUnMDBZOGnFCReoNRRbs8Zv+ORz+ZGAU+YnGmIE2ToOcjV3VvBggMjKrm7S9OsUJeM7vuytPx8v91OLFWrbIvRn0ElIdIJ43e2tH3iosuX/i9BaVZ5g9hiFWZXFw9JSUDwJ1UObsD7AkzN/wuDRC5FWpN3SPiT/OhuDVEV6roNMlO/SK1c1FFZMJQHAxFi5uH7rEIsZmjG+Qn48uuSDEXegDCot8PlLjZzJwdYl/DjI82cI70+ORtPc4e0Z7GaDM8TPUBzv9s4FCxmzXzQ=
+  file: "nginx.tar.gz"
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: concatime/nginx-zero
+  # condition: $CC = clang
