@@ -10,7 +10,7 @@ MUSL    | 1.1.19  | ![](https://repology.org/badge/latest-versions/musl.svg)
 JEMALLOC| 5.1.0   | ![](https://repology.org/badge/latest-versions/jemalloc.svg)
 PCRE    | 8.42    | ![](https://repology.org/badge/latest-versions/pcre.svg)
 ZLIB    | 1.2.11  | ![](https://repology.org/badge/latest-versions/zlib.svg)
-LIBRESSL| 2.7.4   | ![](https://repology.org/badge/latest-versions/libressl.svg)
+LIBRESSL| 2.8.0   | ![](https://repology.org/badge/latest-versions/libressl.svg)
 
 By default, jemalloc is now disabled since it causes boilerplate.
 
