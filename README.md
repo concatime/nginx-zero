@@ -20,7 +20,6 @@ The script (`nginx-zero`) requires:
  - git
  - make
  - cmake
- - ninja
  - patch
 
 `git clone --recurse-submodules -j8 git://github.com/concatime/nginx-zero`
