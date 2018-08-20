@@ -18,7 +18,6 @@ compiler:
 - clang-6.0
 - gcc-4.4
 - clang-3.5
-ignore: README.md
 script: ./nginx-zero
 deploy:
   provider: releases
