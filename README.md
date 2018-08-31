@@ -5,7 +5,7 @@
 
 Package | Version | Latest available
 :------:|---------|-
-NGiИX   | 1.15.2  | ![](https://repology.org/badge/latest-versions/nginx.svg)
+NGiИX   | 1.15.3  | ![](https://repology.org/badge/latest-versions/nginx.svg)
 NJS     | 0.2.2   | ![](https://repology.org/badge/latest-versions/nginx-mod-njs.svg)
 MUSL    | 1.1.19  | ![](https://repology.org/badge/latest-versions/musl.svg)
 JEMALLOC| 5.1.0   | ![](https://repology.org/badge/latest-versions/jemalloc.svg)
