@@ -35,7 +35,7 @@ cd deps
 cd musl
 #sed -i 's|-std=c99|-std=c11|' Makefile
 ./configure --prefix=/opt --enable-wrapper=$_CC #--enable-warnings
-make -j`nproc` install
+make -j`nproc` --silent install
 cd -
 
 # Headers are required for LibreSSL & nginx
