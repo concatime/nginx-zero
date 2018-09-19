@@ -46,10 +46,10 @@ cd -
 #export CC=$_dir/bin/musl-$_CC LDFLAGS=-static
 export CC=/opt/bin/musl-$_CC LDFLAGS=-static
 
-cd jemalloc
-./configure --prefix=/opt --disable-cxx
-make -j`nproc` install_lib_static
-cd -
+#cd jemalloc
+#./configure --prefix=/opt --disable-cxx
+#make -j`nproc` install_lib_static
+#cd -
 
 # PCRE
 # I have a bug which does not aloud me to make
@@ -62,7 +62,15 @@ make -j`nproc` install-binSCRIPTS install-libLTLIBRARIES install-nodist_includeH
 # pkgconfigDATA includeHEADERS=pcreposix
 cd -
 
-# LIBRESSL
+# ZLIB
+cd zlib
+cmake -DCMAKE_INSTALL_PREFIX=/opt
+make -j`nproc` zlibstatic
+cp libz.a /opt/lib
+cp zlib.h zconf.h /opt/include
+cd -
+
+# LibreSSL
 # LibreSSL from Git requires automake, autoconf, etc.
 # https://github.com/libressl-portable/portable/tree/master#prerequisites-when-building-from-a-git-checkout
 tar xf libressl-*.tar.gz
@@ -70,14 +78,6 @@ cd libressl-*
 cmake -DCMAKE_INSTALL_PREFIX=/opt
 make -j`nproc`
 make -j`nproc` test install
-cd -
-
-# ZLIB
-cd zlib
-cmake -DCMAKE_INSTALL_PREFIX=/opt
-make -j`nproc` zlibstatic
-cp libz.a /opt/lib
-cp zlib.h zconf.h /opt/include
 cd -
 
 # NJS & NGX

@@ -1,15 +1,15 @@
+[submodule "deps/musl"]
+	path = deps/musl
+	url = git://git.musl-libc.org/musl
+[submodule "deps/kernel-headers"]
+	path = deps/kernel-headers
+	url = https://github.com/sabotage-linux/kernel-headers.git
+[submodule "deps/zlib"]
+	path = deps/zlib
+	url = https://github.com/madler/zlib.git
 [submodule "deps/njs"]
 	path = deps/njs
 	url = https://github.com/nginx/njs.git
 [submodule "deps/nginx"]
 	path = deps/nginx
 	url = https://github.com/nginx/nginx.git
-[submodule "deps/musl"]
-	path = deps/musl
-	url = git://git.musl-libc.org/musl
-[submodule "deps/zlib"]
-	path = deps/zlib
-	url = https://github.com/madler/zlib.git
-[submodule "deps/kernel-headers"]
-	path = deps/kernel-headers
-	url = https://github.com/sabotage-linux/kernel-headers.git

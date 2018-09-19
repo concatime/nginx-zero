@@ -5,13 +5,13 @@
 
 Package | Version | Latest available
 :------:|---------|-
-NGiИX   | 1.15.3  | ![](https://repology.org/badge/latest-versions/nginx.svg)
-NJS     | 0.2.3   | ![](https://repology.org/badge/latest-versions/nginx-mod-njs.svg)
-MUSL    | 1.1.20  | ![](https://repology.org/badge/latest-versions/musl.svg)
-JEMALLOC| 5.1.0   | ![](https://repology.org/badge/latest-versions/jemalloc.svg)
-PCRE    | 8.42    | ![](https://repology.org/badge/latest-versions/pcre.svg)
-ZLIB    | 1.2.11  | ![](https://repology.org/badge/latest-versions/zlib.svg)
-LIBRESSL| 2.8.0   | ![](https://repology.org/badge/latest-versions/libressl.svg)
+NGiИX   | 1.15.3  | [![](https://repology.org/badge/latest-versions/nginx.svg)](//nginx.org/en/CHANGES)
+NJS     | 0.2.3   | [![](https://repology.org/badge/latest-versions/nginx-mod-njs.svg)](//nginx.org/en/docs/njs/njs_changes.html)
+MUSL    | 1.1.20  | [![](https://repology.org/badge/latest-versions/musl.svg)](//git.musl-libc.org/cgit/musl/tree/WHATSNEW)
+PCRE    | 8.42    | [![](https://repology.org/badge/latest-versions/pcre.svg)](//pcre.org/original/changelog.txt)
+ZLIB    | 1.2.11  | [![](https://repology.org/badge/latest-versions/zlib.svg)](//zlib.net/ChangeLog.txt)
+LIBRESSL| 2.8.0   | [![](https://repology.org/badge/latest-versions/libressl.svg)](//raw.githubusercontent.com/libressl-portable/portable/master/ChangeLog)
+~JEMALLOC~| 5.1.0   | [![](https://repology.org/badge/latest-versions/jemalloc.svg)](//raw.githubusercontent.com/aerospike/jemalloc/master/ChangeLog)
 
 By default, jemalloc is now disabled since it causes boilerplate.
 
