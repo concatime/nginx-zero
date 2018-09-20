@@ -14,6 +14,8 @@ export CFLAGS='-march=native -O3 -pipe'
 
 echo Checking whether the compiler supports “-fstack-protector-strong”…
 echo 'int main(){}' | $_CC -fsyntax-only -fstack-protector-strong -xc - && CFLAGS="$CFLAGS -fstack-protector-strong"
+echo Checking whether the compiler supports “uint128_t”…
+$_CC -dM -E | grep __SIZEOF_INT128__ && INT128=enable-ec_nistp_64_gcc_128
 echo
 
 echo Detecting which compiler is under use…
@@ -73,11 +75,18 @@ cd -
 # LibreSSL
 # LibreSSL from Git requires automake, autoconf, etc.
 # https://github.com/libressl-portable/portable/tree/master#prerequisites-when-building-from-a-git-checkout
-tar xf libressl-*.tar.gz
-cd libressl-*
-cmake -DCMAKE_INSTALL_PREFIX=/opt
+#tar xf libressl-*.tar.gz
+#cd libressl-*
+#cmake -DCMAKE_INSTALL_PREFIX=/opt
+#make -j`nproc`
+#make -j`nproc` test install
+#cd -
+
+# OpenSSL
+cd openssl
+./config --prefix=/opt no-shared no-async no-ssl2 no-ssl3 no-weak-ssl-ciphers $INT128
 make -j`nproc`
-make -j`nproc` test install
+make -j`nproc` install
 cd -
 
 # NJS & NGX
