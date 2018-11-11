@@ -5,7 +5,7 @@
 
 Package | Version | Latest available
 :------:|---------|-
-NGiИX   | 1.15.5  | [![](https://repology.org/badge/latest-versions/nginx.svg)](//nginx.org/en/CHANGES)
+NGiИX   | 1.15.6  | [![](https://repology.org/badge/latest-versions/nginx.svg)](//nginx.org/en/CHANGES)
 NJS     | 0.2.5   | [![](https://repology.org/badge/latest-versions/nginx-mod-njs.svg)](//nginx.org/en/docs/njs/changes.html)
 MUSL    | 1.1.20  | [![](https://repology.org/badge/latest-versions/musl.svg)](//git.musl-libc.org/cgit/musl/tree/WHATSNEW)
 PCRE    | 8.42    | [![](https://repology.org/badge/latest-versions/pcre.svg)](//pcre.org/original/changelog.txt)
