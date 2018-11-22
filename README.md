@@ -5,13 +5,14 @@
 
 Package | Version | Latest available
 :------:|---------|-
-NGiИX   | 1.15.6  | [![](https://repology.org/badge/latest-versions/nginx.svg)](//nginx.org/en/CHANGES)
-NJS     | 0.2.5   | [![](https://repology.org/badge/latest-versions/nginx-mod-njs.svg)](//nginx.org/en/docs/njs/changes.html)
-MUSL    | 1.1.20  | [![](https://repology.org/badge/latest-versions/musl.svg)](//git.musl-libc.org/cgit/musl/tree/WHATSNEW)
-PCRE    | 8.42    | [![](https://repology.org/badge/latest-versions/pcre.svg)](//pcre.org/original/changelog.txt)
-ZLIB    | 1.2.11  | [![](https://repology.org/badge/latest-versions/zlib.svg)](//zlib.net/ChangeLog.txt)
-LIBRESSL| 2.8.2   | [![](https://repology.org/badge/latest-versions/libressl.svg)](//raw.githubusercontent.com/libressl-portable/portable/master/ChangeLog)
-~JEMALLOC~| 5.1.0   | [![](https://repology.org/badge/latest-versions/jemalloc.svg)](//raw.githubusercontent.com/aerospike/jemalloc/master/ChangeLog)
+NGiИX                | 1.15.6  | [![](https://repology.org/badge/latest-versions/nginx.svg)](//nginx.org/en/CHANGES)
+NJS                  | 0.2.5   | [![](https://repology.org/badge/latest-versions/nginx-mod-njs.svg)](//nginx.org/en/docs/njs/changes.html)
+Length Hiding Filter | 1.1.1   | [![](https://img.shields.io/github/release/nulab/nginx-length-hiding-filter-module.svg?maxAge=2592000)](//github.com/nulab/nginx-length-hiding-filter-module/releases)
+MUSL                 | 1.1.20  | [![](https://repology.org/badge/latest-versions/musl.svg)](//git.musl-libc.org/cgit/musl/tree/WHATSNEW)
+PCRE                 | 8.42    | [![](https://repology.org/badge/latest-versions/pcre.svg)](//pcre.org/original/changelog.txt)
+ZLIB                 | 1.2.11  | [![](https://repology.org/badge/latest-versions/zlib.svg)](//zlib.net/ChangeLog.txt)
+LIBRESSL             | 2.8.2   | [![](https://repology.org/badge/latest-versions/libressl.svg)](//raw.githubusercontent.com/libressl-portable/portable/master/ChangeLog)
+~JEMALLOC~           | 5.1.0   | [![](https://repology.org/badge/latest-versions/jemalloc.svg)](//raw.githubusercontent.com/aerospike/jemalloc/master/ChangeLog)
 
 By default, jemalloc is now disabled since it causes boilerplate.
 

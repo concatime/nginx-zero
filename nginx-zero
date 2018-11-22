@@ -95,6 +95,7 @@ auto/configure \
 	--lock-path=logs/nginx.lock \
 	--group=www-data \
 	--add-module=../njs/nginx \
+	--add-module=../nginx-length-hiding-filter-module \
 	--with-compat \
 	--with-stream \
 	--with-threads \
