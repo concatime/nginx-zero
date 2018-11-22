@@ -81,7 +81,7 @@ make -j`nproc` test install
 cd -
 
 # NJS & NGX
-patch -Np0 -i ../dot.patch ||:
+patch -Np0 -i ../*.patch ||:
 
 # NGINX
 cd nginx
