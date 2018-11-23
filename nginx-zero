@@ -64,7 +64,7 @@ cd -
 
 # ZLIB
 cd zlib
-cmake -DCMAKE_INSTALL_PREFIX=/opt
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt
 make -j`nproc` zlibstatic
 cp libz.a /opt/lib
 cp zlib.h zconf.h /opt/include
@@ -75,7 +75,7 @@ cd -
 # https://github.com/libressl-portable/portable/tree/master#prerequisites-when-building-from-a-git-checkout
 tar xf libressl-*.tar.gz
 cd libressl-*
-cmake -DCMAKE_INSTALL_PREFIX=/opt
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt
 make -j`nproc`
 make -j`nproc` test install
 cd -
@@ -95,6 +95,7 @@ auto/configure \
 	--lock-path=logs/nginx.lock \
 	--group=www-data \
 	--add-module=../njs/nginx \
+	--add-module=../ngx-brotli \
 	--add-module=../nginx-length-hiding-filter-module \
 	--with-compat \
 	--with-stream \
