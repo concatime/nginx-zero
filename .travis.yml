@@ -1,5 +1,7 @@
-sudo: false
+# Travis build integration.
+# https://docs.travis-ci.com/
 language: c
+sudo: false
 git:
   depth: false
 addons:
