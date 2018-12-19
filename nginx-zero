@@ -75,9 +75,12 @@ cd -
 # https://github.com/libressl-portable/portable/tree/master#prerequisites-when-building-from-a-git-checkout
 tar xf libressl-*.tar.gz
 cd libressl-*
+rm include/tls.h
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt
-make -j`nproc`
-make -j`nproc` test install
+make -j`nproc` ssl crypto
+cmake -P include/cmake_install.cmake
+cmake -P crypto/cmake_install.cmake
+cmake -P ssl/cmake_install.cmake
 cd -
 
 # NJS & NGX
