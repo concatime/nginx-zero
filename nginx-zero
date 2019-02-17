@@ -10,10 +10,20 @@ _CC=$(readlink -f $(which ${CC:-cc}))
 echo ___COMPILER___
 $_CC --version
 
-export CFLAGS='-march=native -O3 -pipe'
+for std in 17 11 99 89
+do	echo | $_CC -fsyntax-only -std=c$std -xc - && break
+done
+echo Latest compiler c standard supported is $std
+export CFLAGS="-march=native -pipe -O3"
 
-echo Checking whether the compiler supports “-fstack-protector-strong”…
-echo 'int main(){}' | $_CC -fsyntax-only -fstack-protector-strong -xc - && CFLAGS="$CFLAGS -fstack-protector-strong"
+# Below C11
+[ $std -gt 88 ] && LIBATOMIC=--with-libatomic
+
+printf 'Checking whether the compiler supports “-fstack-protector-strong”… '
+echo | $_CC -fsyntax-only -fstack-protector-strong -xc - &&{
+	CFLAGS="$CFLAGS -fstack-protector-strong"
+	echo yes
+}|| echo no
 echo
 
 echo Detecting which compiler is under use…
@@ -31,24 +41,34 @@ cd deps
 # EPOLLEXCLUSIVE not available : Linux4.5 / glibc2.24
 # reuseport is available : Linux3.9+
 
-# MUSL
-cd musl
-#sed -i 's|-std=c99|-std=c11|' Makefile
-./configure --prefix=/opt --enable-wrapper=$_CC #--enable-warnings
-make -j`nproc` --silent install
-cd -
-
 # Headers are required for LibreSSL & nginx
 cd kernel-headers
 make -j`nproc` ARCH=x86_64 DESTDIR=/opt prefix= install
 cd -
 
+# MUSL (CANNOT BE BUILD WITH C11)
+cd musl
+./configure --prefix=/opt --enable-wrapper=$_CC #--enable-warnings
+make -j`nproc` --silent install
+cd -
+
 export CC=/opt/bin/musl-$_CC LDFLAGS=-static
 
-#cd jemalloc
-#./configure --prefix=/opt --disable-cxx
-#make -j`nproc` install_lib_static
-#cd -
+cd jemalloc
+./configure --prefix=/opt --disable-cxx CFLAGS="-std=gnu$std $CFLAGS"
+make -j`nproc` install_lib_static
+cd -
+
+CFLAGS="-std=c$std $CFLAGS"
+LDFLAGS="$LDFLAGS -ljemalloc"
+
+[ -z $LIBATOMIC ] || {
+tar xf libatomic_ops-*
+cd libatomic_ops-*
+./configure --prefix=/opt --disable-docs
+make -j`nproc` install
+cd -
+}
 
 # PCRE
 # I have a bug which does not aloud me to make
@@ -70,13 +90,13 @@ cp libz.a /opt/lib
 cp zlib.h zconf.h /opt/include
 cd -
 
-# LibreSSL
+# LibreSSL (REQUIRES ASM)
 # LibreSSL from Git requires automake, autoconf, etc.
 # https://github.com/libressl-portable/portable/tree/master#prerequisites-when-building-from-a-git-checkout
 tar xf libressl-*.tar.gz
 cd libressl-*
 rm include/tls.h
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt
+env CFLAGS="$CFLAGS -std=gnu$std" cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt
 make -j`nproc` ssl crypto
 cmake -P include/cmake_install.cmake
 cmake -P crypto/cmake_install.cmake
@@ -88,7 +108,7 @@ find .. -name \*.patch -exec patch -Np0 -i{} \;
 
 # NGINX
 cd nginx
-auto/configure \
+auto/configure $LIBATOMIC \
 	--prefix=/opt/nginx \
 	--pid-path=/run/nginx.pid \
 	--sbin-path=bin/nginx \
