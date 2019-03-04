@@ -14,7 +14,7 @@ for std in 17 11 99 89
 do	echo | $_CC -fsyntax-only -std=c$std -xc - && break
 done
 echo Latest compiler c standard supported is $std
-export CFLAGS="-march=native -pipe -O3"
+export CFLAGS="-march=native -pipe -O3" MAKEFLAGS=-j`nproc`
 
 # Below C11
 [ $std -gt 88 ] && LIBATOMIC=--with-libatomic
@@ -43,20 +43,20 @@ cd deps
 
 # Headers are required for LibreSSL & nginx
 cd kernel-headers
-make -j`nproc` ARCH=x86_64 DESTDIR=/opt prefix= install
+make ARCH=x86_64 DESTDIR=/opt prefix= install
 cd -
 
 # MUSL (CANNOT BE BUILD WITH C11)
 cd musl
 ./configure --prefix=/opt --enable-wrapper=$_CC #--enable-warnings
-make -j`nproc` --silent install
+make --silent install
 cd -
 
 export CC=/opt/bin/musl-$_CC LDFLAGS=-static
 
 cd jemalloc
 ./configure --prefix=/opt --disable-cxx CFLAGS="-std=gnu$std $CFLAGS"
-make -j`nproc` install_lib_static
+make install_lib_static
 cd -
 
 CFLAGS="-std=c$std $CFLAGS"
@@ -66,7 +66,7 @@ LDFLAGS="$LDFLAGS -ljemalloc"
 tar xf libatomic_ops-*
 cd libatomic_ops-*
 ./configure --prefix=/opt --disable-docs
-make -j`nproc` install
+make install
 cd -
 }
 
@@ -77,14 +77,14 @@ cd -
 tar xf pcre-*.tar.gz
 cd pcre-*
 ./configure --prefix=/opt --enable-jit --enable-utf --enable-unicode-properties --disable-cpp --enable-shared=0
-make -j`nproc` install-binSCRIPTS install-libLTLIBRARIES install-nodist_includeHEADERS # The bin is required for njs
+make install-binSCRIPTS install-libLTLIBRARIES install-nodist_includeHEADERS # The bin is required for njs
 # pkgconfigDATA includeHEADERS=pcreposix
 cd -
 
 # ZLIB
 cd zlib
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt
-make -j`nproc` zlibstatic
+make zlibstatic
 # TODO
 cp libz.a /opt/lib
 cp zlib.h zconf.h /opt/include
@@ -97,7 +97,7 @@ tar xf libressl-*.tar.gz
 cd libressl-*
 rm include/tls.h
 env CFLAGS="$CFLAGS -std=gnu$std" cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt
-make -j`nproc` ssl crypto
+make ssl crypto
 cmake -P include/cmake_install.cmake
 cmake -P crypto/cmake_install.cmake
 cmake -P ssl/cmake_install.cmake
@@ -161,7 +161,7 @@ auto/configure $LIBATOMIC \
 	#--with-cpu-opt
 	#--build="nginx/$NGINX (nginx-zero)" \
 	# THE CONFIG FILE DOES NOT CONSIDER LDFLAGS
-make -j`nproc` install
+make install
 cd -
 
 tar czf $_root/nginx.tar.gz -C/opt nginx
