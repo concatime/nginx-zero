@@ -36,6 +36,3 @@ To clone:
 
 To install, download the release file called `nginx.tar.gz`, and then
 `sudo tar xf nginx.tar.gz -C/opt`
-
-### Notes (for me)
-In `deps/jemalloc/.gitignore`, I need to manually remove `configure`.
