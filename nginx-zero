@@ -54,7 +54,9 @@ cd -
 
 export CC=/opt/bin/musl-$_CC LDFLAGS=-static
 
-cd jemalloc
+# JEMALLOC
+tar xzf jemalloc-*.tar.gz
+cd jemalloc-*
 ./configure --prefix=/opt --disable-cxx CFLAGS="-std=gnu$std $CFLAGS"
 make install_lib_static
 cd -
@@ -62,8 +64,8 @@ cd -
 CFLAGS="-std=c$std $CFLAGS"
 LDFLAGS="$LDFLAGS -ljemalloc"
 
-[ -z $LIBATOMIC ] || {
-tar xf libatomic_ops-*
+[ -z $LIBATOMIC ] ||{
+tar xzf libatomic_ops-*.tar.gz
 cd libatomic_ops-*
 ./configure --prefix=/opt --disable-docs
 make install
@@ -74,7 +76,7 @@ cd -
 # I have a bug which does not aloud me to make
 # PCRE without automake if I extract and commit
 # Therefor, I need to manually extract it
-tar xf pcre-*.tar.gz
+tar xzf pcre-*.tar.gz
 cd pcre-*
 ./configure --prefix=/opt --enable-jit --enable-utf --enable-unicode-properties --disable-cpp --enable-shared=0
 make install-binSCRIPTS install-libLTLIBRARIES install-nodist_includeHEADERS # The bin is required for njs
@@ -93,7 +95,7 @@ cd -
 # LibreSSL (REQUIRES ASM)
 # LibreSSL from Git requires automake, autoconf, etc.
 # https://github.com/libressl-portable/portable/tree/master#prerequisites-when-building-from-a-git-checkout
-tar xf libressl-*.tar.gz
+tar xzf libressl-*.tar.gz
 cd libressl-*
 rm include/tls.h
 env CFLAGS="$CFLAGS -std=gnu$std" cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt
