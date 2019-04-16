@@ -4,7 +4,7 @@
 
 set -xe
 for p in tar gzip make cmake nproc patch
-do command -v $p >/dev/null || echo Command \`$p\` missing! && false
+do ! command -v $p >/dev/null && echo Command \`$p\` missing && false
 done
 
 _CC=$(readlink -f $(which ${CC:-cc}))
