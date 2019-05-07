@@ -1,6 +1,7 @@
 # Travis build integration.
 # https://docs.travis-ci.com/
 language: c
+dist: xenial
 sudo: false
 git:
   depth: false
@@ -11,13 +12,13 @@ addons:
       retries: true
     sources:
     - ubuntu-toolchain-r-test
-    - llvm-toolchain-trusty-7
+    - llvm-toolchain-xenial-8
     packages:
     - gcc-{4.4,8}
-    - clang-{3.5,7}
+    - clang-{3.5,8}
 compiler:
 - gcc-8
-- clang-7
+- clang-8
 - gcc-4.4
 - clang-3.5
 script: ./nginx-zero
