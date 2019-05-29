@@ -39,7 +39,7 @@ _root=$PWD
 
 cd deps
 
-tar xzf *.tar.gz
+find . -name \*.tar.gz -exec tar xzf {} \;
 
 find .. -name \*.patch -exec patch -Np0 -i{} \;
 
