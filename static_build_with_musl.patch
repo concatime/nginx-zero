@@ -1,4 +1,3 @@
---- nginx/auto/cc/name
 +++ nginx/auto/cc/name
 @@ -10,7 +10,7 @@ if [ "$NGX_PLATFORM" != win32 ]; then
      ngx_feature_run=yes
@@ -9,7 +8,6 @@
      ngx_feature_test=
      . auto/feature
 
---- nginx/auto/include
 +++ nginx/auto/include
 @@ -27,7 +27,7 @@ int main(void) {
  END
@@ -20,7 +18,6 @@
 
  eval "$ngx_test >> $NGX_AUTOCONF_ERR 2>&1"
 
---- nginx/auto/os/linux
 +++ nginx/auto/os/linux
 @@ -37,7 +37,8 @@ fi
  ngx_feature="epoll"
@@ -33,7 +30,6 @@
  ngx_feature_libs=
  ngx_feature_test="int efd = 0;
 
---- nginx/src/os/unix/ngx_process_cycle.c
 +++ nginx/src/os/unix/ngx_process_cycle.c
 @@ -5,6 +5,7 @@
   */
@@ -44,7 +40,6 @@
  #include <ngx_core.h>
  #include <ngx_event.h>
 
---- njs/auto/feature
 +++ njs/auto/feature
 @@ -36,7 +36,7 @@
 
@@ -55,31 +50,3 @@
            $NXT_LD_OPT $NXT_TEST_LIBS $nxt_feature_libs"
 
  # /bin/sh -c "(...)" is to intercept "Killed", "Abort trap",
-
---- njs/auto/pcre
-+++ njs/auto/pcre
-@@ -8,7 +8,7 @@
-
- nxt_found=no
-
--if /bin/sh -c "(pcre-config --version)" >> $NXT_AUTOCONF_ERR 2>&1; then
-+if /bin/sh -c "(/opt/bin/pcre-config --version)" >> $NXT_AUTOCONF_ERR 2>&1; then
-
-     NXT_PCRE_CFLAGS=`pcre-config --cflags`
-     NXT_PCRE_LIB=`pcre-config --libs`
-@@ -19,6 +19,7 @@
-     nxt_feature_incs=$NXT_PCRE_CFLAGS
-     nxt_feature_libs=$NXT_PCRE_LIB
-     nxt_feature_test="#include <pcre.h>
-+                      #include <stddef.h>
-
-                      int main(void) {
-                          pcre  *re;
-@@ -38,7 +39,7 @@
-     exit 1;
- fi
-
--$nxt_echo " + PCRE version: `pcre-config --version`"
-+$nxt_echo " + PCRE version: `/opt/bin/pcre-config --version`"
-
- cat << END >> $NXT_MAKEFILE_CONF

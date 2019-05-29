@@ -1,4 +1,3 @@
---- nginx/src/http/modules/ngx_http_gzip_filter_module.c
 +++ nginx/src/http/modules/ngx_http_gzip_filter_module.c
 @@ -150,7 +150,7 @@
        ngx_http_types_slot,
@@ -10,7 +9,6 @@
      { ngx_string("gzip_comp_level"),
        NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_TAKE1,
 
---- nginx/conf/nginx.conf
 +++ nginx/conf/nginx.conf
 @@ -31,6 +31,13 @@
      keepalive_timeout  65;

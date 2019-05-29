@@ -14,7 +14,7 @@ when there is no brotli installation in "/usr/local/lib":
 
 diff --git a/config b/config
 index e955daf..b877ee7 100644
---- ngx-brotli/config
+--- a/config
 +++ ngx-brotli/config
 @@ -63,7 +63,7 @@ brotli="/usr/local"
 

@@ -112,7 +112,7 @@ find .. -name \*.patch -exec patch -Np0 -i{} \;
 
 # NGINX
 cd nginx
-auto/configure $LIBATOMIC \
+env PATH="$PATH:/opt/bin" auto/configure $LIBATOMIC \
 	--prefix=/opt/nginx \
 	--pid-path=/run/nginx.pid \
 	--sbin-path=bin/nginx \
