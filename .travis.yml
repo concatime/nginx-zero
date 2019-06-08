@@ -14,10 +14,10 @@ addons:
     - ubuntu-toolchain-r-test
     - llvm-toolchain-xenial-8
     packages:
-    - gcc-{4.4,8}
+    - gcc-{4.4,9}
     - clang-{3.5,8}
 compiler:
-- gcc-8
+- gcc-9
 - clang-8
 - gcc-4.4
 - clang-3.5
