@@ -30,4 +30,5 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
-    compiler: gcc-9
+    condition: '$TRAVIS_COMPILER = gcc-9' # or CC_FOR_BUILD
+  # compiler: gcc-9 DOES NOT WORK
