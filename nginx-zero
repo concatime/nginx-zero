@@ -52,7 +52,7 @@ cd kernel-headers
 make ARCH=x86_64 DESTDIR=/opt prefix= install
 cd -
 
-# MUSL (CANNOT BE BUILD WITH C11)
+# MUSL (CANNOT BE BUILT WITH C11)
 cd musl
 ./configure --prefix=/opt --enable-wrapper=$_CC #--enable-warnings
 make --silent install
