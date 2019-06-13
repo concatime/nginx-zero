@@ -165,4 +165,6 @@ env PATH="$PATH:/opt/bin" auto/configure $LIBATOMIC \
 make install
 cd -
 
+# Avoid replacing user’s config file on extraction (but keep nginx.conf.default)
+rm /opt/nginx/conf/nginx.conf
 tar czf $_root/nginx.tar.gz -C/opt nginx
