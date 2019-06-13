@@ -7,10 +7,14 @@ for p in tar gzip make cmake nproc patch
 do ! command -v $p >/dev/null && echo Command \`$p\` missing && false
 done
 
-_CC=$(readlink -f $(which ${CC:-cc}))
+echo ___ENVIRONNEMENT___
+env
+echo
 
 echo ___COMPILER___
+_CC=$(readlink -f $(which ${CC:-cc}))
 $_CC --verbose
+echo
 
 for std in 17 11 99 89
 do	echo | $_CC -fsyntax-only -std=c$std -xc - && break
@@ -61,6 +65,7 @@ cd -
 echo ___MUSL_COMPILER___
 export CC=/opt/bin/musl-$_CC LDFLAGS=-static
 $CC --verbose
+echo
 
 # JEMALLOC
 cd jemalloc-*
