@@ -10,7 +10,7 @@ done
 _CC=$(readlink -f $(which ${CC:-cc}))
 
 echo ___COMPILER___
-$_CC --version
+$_CC --verbose
 
 for std in 17 11 99 89
 do	echo | $_CC -fsyntax-only -std=c$std -xc - && break
@@ -58,7 +58,9 @@ cd musl
 make --silent install
 cd -
 
+echo ___MUSL_COMPILER___
 export CC=/opt/bin/musl-$_CC LDFLAGS=-static
+$CC --verbose
 
 # JEMALLOC
 cd jemalloc-*
