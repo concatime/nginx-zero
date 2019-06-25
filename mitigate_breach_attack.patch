@@ -17,7 +17,7 @@
 +    # You have to explicitely enable compression on `text/html'
 +    # Please look at https://trac.nginx.org/nginx/ticket/1083
 +    # To mitigate BREACH vulnerability, you need to enable length hiding
-+    # Please look at http://dark-net.net/?p=49
++    # See: https://web.archive.org/web/20170311132458/http://dark-net.net/?p=49
 +    #gzip_types text/html;
 +    #length_hiding on;
 +    #length_hiding_max 1024;

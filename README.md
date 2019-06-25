@@ -18,7 +18,7 @@ Package              | Version | Latest available
 :-------------------:|---------|-
 NJS                  | 0.3.2   | [![](https://img.shields.io/github/tag/nginx/njs.svg?maxAge=2592000)](//nginx.org/en/docs/njs/changes.html)
 Brotli               | 0.1.3-rc| [![](https://img.shields.io/github/tag/eustas/ngx_brotli.svg?maxAge=2592000)](//github.com/eustas/ngx_brotli/releases)
-Length Hiding Filter | 1.1.1   | [![](https://img.shields.io/github/tag/nulab/nginx-length-hiding-filter-module.svg?maxAge=2592000)](//github.com/nulab/nginx-length-hiding-filter-module/releases)
+Length Hiding Filter | master  | [![](https://img.shields.io/github/tag/nulab/nginx-length-hiding-filter-module.svg?maxAge=2592000)](//github.com/nulab/nginx-length-hiding-filter-module/releases)
 
 
 By default, jemalloc is now disabled since it causes boilerplate.
