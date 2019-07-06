@@ -1,0 +1,20 @@
+#!/sbin/openrc-run
+command=/opt/nginx/bin/nginx
+extra_started_commands=reload\ update
+start() {
+	$command
+}
+stop() {
+	$command -s quit
+}
+reload() {
+	$command -s reload
+}
+update() {
+	kill -s USR2 `cat /run/nginx.pid`
+	sleep 1
+	kill -s WINCH `cat /run/nginx.pid.oldbin`
+	sleep 1
+	kill -s QUIT `cat /run/nginx.pid.oldbin`
+	sleep 1
+}
