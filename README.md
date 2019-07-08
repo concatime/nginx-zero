@@ -14,11 +14,11 @@ JEMALLOC      | 5.2.0   | [![](https://repology.org/badge/latest-versions/jemall
 LIBATOMIC\_OPS| 7.6.10  | [![](https://repology.org/badge/latest-versions/libatomic-ops.svg)](//raw.githubusercontent.com/ivmai/libatomic_ops/blob/master/ChangeLog)
 
 ### Modules
-Package              | Version | Latest available
-:-------------------:|---------|-
-NJS                  | 0.3.2   | [![](https://img.shields.io/github/tag/nginx/njs.svg?maxAge=2592000)](//nginx.org/en/docs/njs/changes.html)
-Brotli               | 0.1.3-rc| [![](https://img.shields.io/github/tag/eustas/ngx_brotli.svg?maxAge=2592000)](//github.com/eustas/ngx_brotli/releases)
-Length Hiding Filter | master  | [![](https://img.shields.io/github/tag/nulab/nginx-length-hiding-filter-module.svg?maxAge=2592000)](//github.com/nulab/nginx-length-hiding-filter-module/releases)
+Package                        | Version | Latest available
+:-----------------------------:|---------|-
+NJS                            | 0.3.2   | [![](https://img.shields.io/github/tag/nginx/njs.svg)](//nginx.org/en/docs/njs/changes.html)
+Brotli (eustas fork)           | master  | [![](https://img.shields.io/github/tag/eustas/ngx_brotli.svg)](//github.com/eustas/ngx_brotli/releases)
+Length Hiding Filter (my fork) | master  | [![](https://img.shields.io/github/tag/concatime/nginx-length-hiding-filter-module.svg)](//github.com/concatime/nginx-length-hiding-filter-module/releases)
 
 
 By default, jemalloc is now disabled since it causes boilerplate.
