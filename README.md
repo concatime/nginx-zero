@@ -16,7 +16,7 @@ LIBATOMIC\_OPS| 7.6.10    | [![](https://repology.org/badge/latest-versions/liba
 ### Modules
 Package                        | Version | Latest available
 :-----------------------------:|---------|-
-NJS                            | 0.3.2   | [![](https://img.shields.io/github/tag/nginx/njs.svg)](//nginx.org/en/docs/njs/changes.html)
+NJS                            | 0.3.3   | [![](https://img.shields.io/github/tag/nginx/njs.svg)](//nginx.org/en/docs/njs/changes.html)
 Brotli (eustas fork)           | master  | [![](https://img.shields.io/github/tag/eustas/ngx_brotli.svg)](//github.com/eustas/ngx_brotli/releases)
 Length Hiding Filter (my fork) | master  | [![](https://img.shields.io/github/tag/concatime/nginx-length-hiding-filter-module.svg)](//github.com/concatime/nginx-length-hiding-filter-module/releases)
 
