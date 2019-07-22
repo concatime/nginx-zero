@@ -87,6 +87,7 @@ cd -
 
 CFLAGS="-std=c$STD $CFLAGS"
 LDFLAGS="$LDFLAGS -ljemalloc"
+LD_LIBRARY_PATH=/opt/lib
 
 [ -z $LIBATOMIC ] ||{
 cd libatomic_ops-*/
