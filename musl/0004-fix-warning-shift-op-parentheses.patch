@@ -1,0 +1,172 @@
+From 941c4bcbbb28432effb952044e405713951864da Mon Sep 17 00:00:00 2001
+From: Issam Maghni <me@concati.me>
+Date: Mon, 22 Jul 2019 13:37:20 -0400
+Subject: [PATCH 4/4] fix warning shift-op-parentheses
+
+Signed-off-by: Issam Maghni <me@concati.me>
+---
+ include/byteswap.h       |  2 +-
+ include/endian.h         |  2 +-
+ src/locale/iconv.c       |  4 ++--
+ src/multibyte/c16rtomb.c |  2 +-
+ src/prng/__rand48_step.c |  4 ++--
+ src/stdio/vfprintf.c     | 18 +++++++++---------
+ src/stdio/vfwprintf.c    | 16 ++++++++--------
+ 7 files changed, 24 insertions(+), 24 deletions(-)
+
+diff --git a/include/byteswap.h b/include/byteswap.h
+index 861c3aa1..928be2b3 100644
+--- a/include/byteswap.h
++++ b/include/byteswap.h
+@@ -16,7 +16,7 @@ static __inline uint32_t __bswap_32(uint32_t __x)
+ 
+ static __inline uint64_t __bswap_64(uint64_t __x)
+ {
+-	return __bswap_32(__x)+0ULL<<32 | __bswap_32(__x>>32);
++	return (__bswap_32(__x)+0ULL)<<32 | __bswap_32(__x>>32);
+ }
+ 
+ #define bswap_16(x) __bswap_16(x)
+diff --git a/include/endian.h b/include/endian.h
+index 60716508..88c3347b 100644
+--- a/include/endian.h
++++ b/include/endian.h
+@@ -34,7 +34,7 @@ static __inline uint32_t __bswap32(uint32_t __x)
+ 
+ static __inline uint64_t __bswap64(uint64_t __x)
+ {
+-	return __bswap32(__x)+0ULL<<32 | __bswap32(__x>>32);
++	return (__bswap32(__x)+0ULL)<<32 | __bswap32(__x>>32);
+ }
+ 
+ #if __BYTE_ORDER == __LITTLE_ENDIAN
+diff --git a/src/locale/iconv.c b/src/locale/iconv.c
+index 28c7709e..c3f790b1 100644
+--- a/src/locale/iconv.c
++++ b/src/locale/iconv.c
+@@ -181,7 +181,7 @@ static void put_16(unsigned char *s, unsigned c, int e)
+ static unsigned get_32(const unsigned char *s, int e)
+ {
+ 	e &= 3;
+-	return s[e]+0U<<24 | s[e^1]<<16 | s[e^2]<<8 | s[e^3];
++	return (s[e]+0U)<<24 | s[e^1]<<16 | s[e^2]<<8 | s[e^3];
+ }
+ 
+ static void put_32(unsigned char *s, unsigned c, int e)
+@@ -201,7 +201,7 @@ static unsigned legacy_map(const unsigned char *map, unsigned c)
+ {
+ 	if (c < 4*map[-1]) return c;
+ 	unsigned x = c - 4*map[-1];
+-	x = map[x*5/4]>>2*x%8 | (map[x*5/4+1]<<8-2*x%8 & 1023);
++	x = map[x*5/4]>>2*x%8 | (map[x*5/4+1]<<(8-2*x%8) & 1023);
+ 	return x < 256 ? x : legacy_chars[x-256];
+ }
+ 
+diff --git a/src/multibyte/c16rtomb.c b/src/multibyte/c16rtomb.c
+index 39ca3758..5ebfbc29 100644
+--- a/src/multibyte/c16rtomb.c
++++ b/src/multibyte/c16rtomb.c
+@@ -15,7 +15,7 @@ size_t c16rtomb(char *restrict s, char16_t c16, mbstate_t *restrict ps)
+ 	}
+ 
+ 	if (!*x && c16 - 0xd800u < 0x400) {
+-		*x = c16 - 0xd7c0 << 10;
++		*x = (c16 - 0xd7c0) << 10;
+ 		return 0;
+ 	}
+ 
+diff --git a/src/prng/__rand48_step.c b/src/prng/__rand48_step.c
+index 94703d07..4e4e9ab6 100644
+--- a/src/prng/__rand48_step.c
++++ b/src/prng/__rand48_step.c
+@@ -4,8 +4,8 @@
+ uint64_t __rand48_step(unsigned short *xi, unsigned short *lc)
+ {
+ 	uint64_t a, x;
+-	x = xi[0] | xi[1]+0U<<16 | xi[2]+0ULL<<32;
+-	a = lc[0] | lc[1]+0U<<16 | lc[2]+0ULL<<32;
++	x = xi[0] | (xi[1]+0U)<<16 | (xi[2]+0ULL)<<32;
++	a = lc[0] | (lc[1]+0U)<<16 | (lc[2]+0ULL)<<32;
+ 	x = a*x + lc[3];
+ 	xi[0] = x;
+ 	xi[1] = x>>16;
+diff --git a/src/stdio/vfprintf.c b/src/stdio/vfprintf.c
+index 9b961e7f..ac89abc6 100644
+--- a/src/stdio/vfprintf.c
++++ b/src/stdio/vfprintf.c
+@@ -19,12 +19,12 @@
+ /* Convenient bit representation for modifier flags, which all fall
+  * within 31 codepoints of the space character. */
+ 
+-#define ALT_FORM   (1U<<'#'-' ')
+-#define ZERO_PAD   (1U<<'0'-' ')
+-#define LEFT_ADJ   (1U<<'-'-' ')
+-#define PAD_POS    (1U<<' '-' ')
+-#define MARK_POS   (1U<<'+'-' ')
+-#define GROUPED    (1U<<'\''-' ')
++#define ALT_FORM   (1U<<('#'-' '))
++#define ZERO_PAD   (1U<<('0'-' '))
++#define LEFT_ADJ   (1U<<('-'-' '))
++#define PAD_POS    (1U<<(' '-' '))
++#define MARK_POS   (1U<<('+'-' '))
++#define GROUPED    (1U<<('\''-' '))
+ 
+ #define FLAGMASK (ALT_FORM|ZERO_PAD|LEFT_ADJ|PAD_POS|MARK_POS|GROUPED)
+ 
+@@ -341,7 +341,7 @@ static int fmt_fp(FILE *f, long double y, int w, int p, int fl, int t)
+ 		if (z>d+1) z=d+1;
+ 	}
+ 	for (; z>a && !z[-1]; z--);
+-	
++
+ 	if ((t|32)=='g') {
+ 		if (!p) p++;
+ 		if (p>e && e>=-4) {
+@@ -471,8 +471,8 @@ static int printf_core(FILE *f, const char *fmt, va_list *ap, union arg *nl_arg,
+ 		}
+ 
+ 		/* Read modifier flags */
+-		for (fl=0; (unsigned)*s-' '<32 && (FLAGMASK&(1U<<*s-' ')); s++)
+-			fl |= 1U<<*s-' ';
++		for (fl=0; (unsigned)*s-' '<32 && (FLAGMASK&(1U<<(*s-' '))); s++)
++			fl |= 1U<<(*s-' ');
+ 
+ 		/* Read field width */
+ 		if (*s=='*') {
+diff --git a/src/stdio/vfwprintf.c b/src/stdio/vfwprintf.c
+index 0adf0b7a..a30be6ee 100644
+--- a/src/stdio/vfwprintf.c
++++ b/src/stdio/vfwprintf.c
+@@ -12,12 +12,12 @@
+ /* Convenient bit representation for modifier flags, which all fall
+  * within 31 codepoints of the space character. */
+ 
+-#define ALT_FORM   (1U<<'#'-' ')
+-#define ZERO_PAD   (1U<<'0'-' ')
+-#define LEFT_ADJ   (1U<<'-'-' ')
+-#define PAD_POS    (1U<<' '-' ')
+-#define MARK_POS   (1U<<'+'-' ')
+-#define GROUPED    (1U<<'\''-' ')
++#define ALT_FORM   (1U<<('#'-' '))
++#define ZERO_PAD   (1U<<('0'-' '))
++#define LEFT_ADJ   (1U<<('-'-' '))
++#define PAD_POS    (1U<<(' '-' '))
++#define MARK_POS   (1U<<('+'-' '))
++#define GROUPED    (1U<<('\''-' '))
+ 
+ #define FLAGMASK (ALT_FORM|ZERO_PAD|LEFT_ADJ|PAD_POS|MARK_POS|GROUPED)
+ 
+@@ -184,8 +184,8 @@ static int wprintf_core(FILE *f, const wchar_t *fmt, va_list *ap, union arg *nl_
+ 		}
+ 
+ 		/* Read modifier flags */
+-		for (fl=0; (unsigned)*s-' '<32 && (FLAGMASK&(1U<<*s-' ')); s++)
+-			fl |= 1U<<*s-' ';
++		for (fl=0; (unsigned)*s-' '<32 && (FLAGMASK&(1U<<(*s-' '))); s++)
++			fl |= 1U<<(*s-' ');
+ 
+ 		/* Read field width */
+ 		if (*s=='*') {
+-- 
+2.22.0
+

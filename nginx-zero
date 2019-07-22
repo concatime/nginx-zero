@@ -18,7 +18,7 @@ echo
 
 echo Detecting which compiler is under use…
 case $(basename $CC) in
-	clang*)_CC=clang && CFLAGS="$CFLAGS -Wno-unused-command-line-argument";;
+	clang*)_CC=clang && CFLAGS='-Wno-string-plus-int -Wno-unknown-pragmas -Wno-ignored-attributes -Wno-unused-command-line-argument';;
 	*gcc*) _CC=gcc   ;; # Asterix at start: x86_64-linux-gnu-gcc-8
 	*) echo Unsupported compiler \`$CC\' && false
 esac
@@ -28,7 +28,7 @@ for std in 17 11 99 89
 do	echo | $CC -fsyntax-only -std=c$std -xc - && break
 done
 echo Latest compiler c standard supported is $std
-export CFLAGS="-march=native -pipe -O3" MAKEFLAGS=-j`nproc`
+export CFLAGS="-march=native -pipe -O3 $CFLAGS" MAKEFLAGS=-j`nproc`
 
 # Below C11
 [ $std -gt 88 ] && LIBATOMIC=--with-libatomic
@@ -46,7 +46,11 @@ cd deps
 
 find . -name \*.tar.gz -exec tar xzf {} \;
 
-find .. -name \*.patch -exec patch -Np0 -i{} \;
+find .. -maxdepth 1 -name \*.patch -exec patch -Np0 -i{} \;
+
+cd musl
+find ../../musl/* -exec patch -Np1 -i{} \;
+cd -
 
 if [ $(uname) = Linux ]; then
 	# Gathering all the dependencies

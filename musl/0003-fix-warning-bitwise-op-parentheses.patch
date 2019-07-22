@@ -1,0 +1,68 @@
+From 4989dbdeca529320d3f409858d2b96cb3101380b Mon Sep 17 00:00:00 2001
+From: Issam Maghni <me@concati.me>
+Date: Mon, 22 Jul 2019 13:36:58 -0400
+Subject: [PATCH 3/4] fix warning bitwise-op-parentheses
+
+Signed-off-by: Issam Maghni <me@concati.me>
+---
+ include/byteswap.h       | 2 +-
+ include/endian.h         | 2 +-
+ src/locale/__mo_lookup.c | 2 +-
+ src/locale/iconv.c       | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/include/byteswap.h b/include/byteswap.h
+index 00b9df3c..861c3aa1 100644
+--- a/include/byteswap.h
++++ b/include/byteswap.h
+@@ -11,7 +11,7 @@ static __inline uint16_t __bswap_16(uint16_t __x)
+ 
+ static __inline uint32_t __bswap_32(uint32_t __x)
+ {
+-	return __x>>24 | __x>>8&0xff00 | __x<<8&0xff0000 | __x<<24;
++	return __x>>24 | (__x>>8&0xff00) | (__x<<8&0xff0000) | __x<<24;
+ }
+ 
+ static __inline uint64_t __bswap_64(uint64_t __x)
+diff --git a/include/endian.h b/include/endian.h
+index 1bd44451..60716508 100644
+--- a/include/endian.h
++++ b/include/endian.h
+@@ -29,7 +29,7 @@ static __inline uint16_t __bswap16(uint16_t __x)
+ 
+ static __inline uint32_t __bswap32(uint32_t __x)
+ {
+-	return __x>>24 | __x>>8&0xff00 | __x<<8&0xff0000 | __x<<24;
++	return __x>>24 | (__x>>8&0xff00) | (__x<<8&0xff0000) | __x<<24;
+ }
+ 
+ static __inline uint64_t __bswap64(uint64_t __x)
+diff --git a/src/locale/__mo_lookup.c b/src/locale/__mo_lookup.c
+index d18ab774..fac204e2 100644
+--- a/src/locale/__mo_lookup.c
++++ b/src/locale/__mo_lookup.c
+@@ -3,7 +3,7 @@
+ 
+ static inline uint32_t swapc(uint32_t x, int c)
+ {
+-	return c ? x>>24 | x>>8&0xff00 | x<<8&0xff0000 | x<<24 : x;
++	return c ? x>>24 | (x>>8&0xff00) | (x<<8&0xff0000) | x<<24 : x;
+ }
+ 
+ const char *__mo_lookup(const void *p, size_t size, const char *s)
+diff --git a/src/locale/iconv.c b/src/locale/iconv.c
+index ecb57bc2..28c7709e 100644
+--- a/src/locale/iconv.c
++++ b/src/locale/iconv.c
+@@ -201,7 +201,7 @@ static unsigned legacy_map(const unsigned char *map, unsigned c)
+ {
+ 	if (c < 4*map[-1]) return c;
+ 	unsigned x = c - 4*map[-1];
+-	x = map[x*5/4]>>2*x%8 | map[x*5/4+1]<<8-2*x%8 & 1023;
++	x = map[x*5/4]>>2*x%8 | (map[x*5/4+1]<<8-2*x%8 & 1023);
+ 	return x < 256 ? x : legacy_chars[x-256];
+ }
+ 
+-- 
+2.22.0
+

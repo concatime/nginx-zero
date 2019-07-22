@@ -1,0 +1,35 @@
+From 1dad88f5185bec2d912a319dc91c7ddd5e831c93 Mon Sep 17 00:00:00 2001
+From: Issam Maghni <me@concati.me>
+Date: Mon, 22 Jul 2019 13:52:06 -0400
+Subject: [PATCH] fix warning parentheses
+
+Signed-off-by: Issam Maghni <me@concati.me>
+---
+ src/locale/dcngettext.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/locale/dcngettext.c b/src/locale/dcngettext.c
+index 4c304393..3a10e42f 100644
+--- a/src/locale/dcngettext.c
++++ b/src/locale/dcngettext.c
+@@ -81,7 +81,7 @@ char *bindtextdomain(const char *domainname, const char *dirname)
+ 	}
+ 
+ 	UNLOCK(lock);
+-	
++
+ 	return (char *)p->dirname;
+ }
+ 
+@@ -178,7 +178,7 @@ notrans:
+ 			snprintf(name, sizeof name, "%s/%.*s%.*s/%s/%s.mo\0",
+ 				dirname, (int)loclen, locname,
+ 				(int)alt_modlen, modname, catname, domainname);
+-			if (map = __map_file(name, &map_size)) break;
++			if ((map = __map_file(name, &map_size))) break;
+ 
+ 			/* Try dropping @mod, _YY, then both. */
+ 			if (alt_modlen) {
+-- 
+2.22.0
+

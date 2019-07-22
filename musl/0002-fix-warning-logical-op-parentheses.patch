@@ -1,0 +1,209 @@
+From 1b054d2863158c1ed0f091d16397c3ffbd857c5e Mon Sep 17 00:00:00 2001
+From: Issam Maghni <me@concati.me>
+Date: Mon, 22 Jul 2019 13:34:49 -0400
+Subject: [PATCH 2/4] fix warning logical-op-parentheses
+
+Signed-off-by: Issam Maghni <me@concati.me>
+---
+ src/internal/shgetc.c       | 2 +-
+ src/legacy/getpass.c        | 2 +-
+ src/locale/iconv.c          | 2 +-
+ src/locale/locale_map.c     | 6 +++---
+ src/passwd/getgr_a.c        | 8 ++++----
+ src/passwd/getpw_a.c        | 8 ++++----
+ src/regex/glob.c            | 8 ++++----
+ src/stdio/getc.h            | 2 +-
+ src/stdio/putc.h            | 2 +-
+ src/thread/pthread_cancel.c | 2 +-
+ 10 files changed, 21 insertions(+), 21 deletions(-)
+
+diff --git a/src/internal/shgetc.c b/src/internal/shgetc.c
+index a4a9c633..b458d93e 100644
+--- a/src/internal/shgetc.c
++++ b/src/internal/shgetc.c
+@@ -20,7 +20,7 @@ int __shgetc(FILE *f)
+ {
+ 	int c;
+ 	off_t cnt = shcnt(f);
+-	if (f->shlim && cnt >= f->shlim || (c=__uflow(f)) < 0) {
++	if ((f->shlim && cnt >= f->shlim) || (c=__uflow(f)) < 0) {
+ 		f->shcnt = f->buf - f->rpos + cnt;
+ 		f->shend = f->rpos;
+ 		f->shlim = -1;
+diff --git a/src/legacy/getpass.c b/src/legacy/getpass.c
+index d51286c0..036a7859 100644
+--- a/src/legacy/getpass.c
++++ b/src/legacy/getpass.c
+@@ -27,7 +27,7 @@ char *getpass(const char *prompt)
+ 
+ 	l = read(fd, password, sizeof password);
+ 	if (l >= 0) {
+-		if (l > 0 && password[l-1] == '\n' || l==sizeof password) l--;
++		if ((l > 0 && password[l-1] == '\n') || l==sizeof password) l--;
+ 		password[l] = 0;
+ 	}
+ 
+diff --git a/src/locale/iconv.c b/src/locale/iconv.c
+index 3047c27b..ecb57bc2 100644
+--- a/src/locale/iconv.c
++++ b/src/locale/iconv.c
+@@ -495,7 +495,7 @@ size_t iconv(iconv_t cd, char **restrict in, size_t *restrict inb, char **restri
+ 			if (c >= 93 || d >= 94) {
+ 				c += (0xa1-0x81);
+ 				d += 0xa1;
+-				if (c >= 93 || c>=0xc6-0x81 && d>0x52)
++				if (c >= 93 || (c>=0xc6-0x81 && d>0x52))
+ 					goto ilseq;
+ 				if (d-'A'<26) d = d-'A';
+ 				else if (d-'a'<26) d = d-'a'+26;
+diff --git a/src/locale/locale_map.c b/src/locale/locale_map.c
+index 2321bac0..8ee4641c 100644
+--- a/src/locale/locale_map.c
++++ b/src/locale/locale_map.c
+@@ -32,9 +32,9 @@ const struct __locale_map *__get_locale(int cat, const char *val)
+ 	size_t l, n;
+ 
+ 	if (!*val) {
+-		(val = getenv("LC_ALL")) && *val ||
+-		(val = getenv(envvars[cat])) && *val ||
+-		(val = getenv("LANG")) && *val ||
++		((val = getenv("LC_ALL")) && *val) ||
++		((val = getenv(envvars[cat])) && *val) ||
++		((val = getenv("LANG")) && *val) ||
+ 		(val = "C.UTF-8");
+ 	}
+ 
+diff --git a/src/passwd/getgr_a.c b/src/passwd/getgr_a.c
+index afeb1ece..5605b4b6 100644
+--- a/src/passwd/getgr_a.c
++++ b/src/passwd/getgr_a.c
+@@ -33,8 +33,8 @@ int __getgr_a(const char *name, gid_t gid, struct group *gr, char **buf, size_t
+ 	}
+ 
+ 	while (!(rv = __getgrent_a(f, gr, buf, size, mem, nmem, res)) && *res) {
+-		if (name && !strcmp(name, (*res)->gr_name)
+-		|| !name && (*res)->gr_gid == gid) {
++		if ((name && !strcmp(name, (*res)->gr_name))
++		|| (!name && (*res)->gr_gid == gid)) {
+ 			break;
+ 		}
+ 	}
+@@ -149,8 +149,8 @@ int __getgr_a(const char *name, gid_t gid, struct group *gr, char **buf, size_t
+ 			goto cleanup_f;
+ 		}
+ 
+-		if (name && strcmp(name, gr->gr_name)
+-		|| !name && gid != gr->gr_gid) {
++		if ((name && strcmp(name, gr->gr_name))
++		|| (!name && gid != gr->gr_gid)) {
+ 			rv = EIO;
+ 			goto cleanup_f;
+ 		}
+diff --git a/src/passwd/getpw_a.c b/src/passwd/getpw_a.c
+index 15a70c03..e1406319 100644
+--- a/src/passwd/getpw_a.c
++++ b/src/passwd/getpw_a.c
+@@ -34,8 +34,8 @@ int __getpw_a(const char *name, uid_t uid, struct passwd *pw, char **buf, size_t
+ 	}
+ 
+ 	while (!(rv = __getpwent_a(f, pw, buf, size, res)) && *res) {
+-		if (name && !strcmp(name, (*res)->pw_name)
+-		|| !name && (*res)->pw_uid == uid)
++		if ((name && !strcmp(name, (*res)->pw_name))
++		|| (!name && (*res)->pw_uid == uid))
+ 			break;
+ 	}
+ 	fclose(f);
+@@ -122,8 +122,8 @@ int __getpw_a(const char *name, uid_t uid, struct passwd *pw, char **buf, size_t
+ 			goto cleanup_f;
+ 		}
+ 
+-		if (name && strcmp(name, pw->pw_name)
+-		|| !name && uid != pw->pw_uid) {
++		if ((name && strcmp(name, pw->pw_name))
++		|| (!name && uid != pw->pw_uid)) {
+ 			rv = EIO;
+ 			goto cleanup_f;
+ 		}
+diff --git a/src/regex/glob.c b/src/regex/glob.c
+index aa1c6a44..3ce69913 100644
+--- a/src/regex/glob.c
++++ b/src/regex/glob.c
+@@ -142,7 +142,7 @@ static int do_glob(char *buf, size_t pos, int type, char *pat, int flags, int (*
+ 		/* With GLOB_PERIOD, don't allow matching . or .. unless
+ 		 * fnmatch would match them with FNM_PERIOD rules in effect. */
+ 		if (p2 && (flags & GLOB_PERIOD) && de->d_name[0]=='.'
+-		    && (!de->d_name[1] || de->d_name[1]=='.' && !de->d_name[2])
++		    && (!de->d_name[1] || (de->d_name[1]=='.' && !de->d_name[2]))
+ 		    && fnmatch(pat, de->d_name, fnm_flags | FNM_PERIOD))
+ 			continue;
+ 
+@@ -189,7 +189,7 @@ int glob(const char *restrict pat, int flags, int (*errfunc)(const char *path, i
+ 	size_t offs = (flags & GLOB_DOOFFS) ? g->gl_offs : 0;
+ 	int error = 0;
+ 	char buf[PATH_MAX];
+-	
++
+ 	if (!errfunc) errfunc = ignore_err;
+ 
+ 	if (!(flags & GLOB_APPEND)) {
+@@ -210,7 +210,7 @@ int glob(const char *restrict pat, int flags, int (*errfunc)(const char *path, i
+ 		freelist(&head);
+ 		return error;
+ 	}
+-	
++
+ 	for (cnt=0, tail=head.next; tail; tail=tail->next, cnt++);
+ 	if (!cnt) {
+ 		if (flags & GLOB_NOCHECK) {
+@@ -246,7 +246,7 @@ int glob(const char *restrict pat, int flags, int (*errfunc)(const char *path, i
+ 
+ 	if (!(flags & GLOB_NOSORT))
+ 		qsort(g->gl_pathv+offs, cnt, sizeof(char *), sort);
+-	
++
+ 	return error;
+ }
+ 
+diff --git a/src/stdio/getc.h b/src/stdio/getc.h
+index e24f9905..7a4643cd 100644
+--- a/src/stdio/getc.h
++++ b/src/stdio/getc.h
+@@ -16,7 +16,7 @@ static int locking_getc(FILE *f)
+ static inline int do_getc(FILE *f)
+ {
+ 	int l = f->lock;
+-	if (l < 0 || l && (l & ~MAYBE_WAITERS) == __pthread_self()->tid)
++	if (l < 0 || (l && (l & ~MAYBE_WAITERS) == __pthread_self()->tid))
+ 		return getc_unlocked(f);
+ 	return locking_getc(f);
+ }
+diff --git a/src/stdio/putc.h b/src/stdio/putc.h
+index 2014c4ec..2d7dce16 100644
+--- a/src/stdio/putc.h
++++ b/src/stdio/putc.h
+@@ -16,7 +16,7 @@ static int locking_putc(int c, FILE *f)
+ static inline int do_putc(int c, FILE *f)
+ {
+ 	int l = f->lock;
+-	if (l < 0 || l && (l & ~MAYBE_WAITERS) == __pthread_self()->tid)
++	if (l < 0 || (l && (l & ~MAYBE_WAITERS) == __pthread_self()->tid))
+ 		return putc_unlocked(c, f);
+ 	return locking_putc(c, f);
+ }
+diff --git a/src/thread/pthread_cancel.c b/src/thread/pthread_cancel.c
+index 2f9d5e97..9cc187f3 100644
+--- a/src/thread/pthread_cancel.c
++++ b/src/thread/pthread_cancel.c
+@@ -56,7 +56,7 @@ static void cancel_handler(int sig, siginfo_t *si, void *ctx)
+ 
+ 	_sigaddset(&uc->uc_sigmask, SIGCANCEL);
+ 
+-	if (self->cancelasync || pc >= (uintptr_t)__cp_begin && pc < (uintptr_t)__cp_end) {
++	if (self->cancelasync || (pc >= (uintptr_t)__cp_begin && pc < (uintptr_t)__cp_end)) {
+ 		uc->uc_mcontext.MC_PC = (uintptr_t)__cp_cancel;
+ #ifdef CANCEL_GOT
+ 		uc->uc_mcontext.MC_GOT = CANCEL_GOT;
+-- 
+2.22.0
+
