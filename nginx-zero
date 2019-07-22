@@ -3,7 +3,7 @@
 # PC Files???
 
 set -xe
-for p in tar gzip make cmake nproc patch
+for p in tar gzip make cmake uname nproc patch
 do ! command -v $p >/dev/null && echo Command \`$p\` missing && false
 done
 
@@ -12,12 +12,20 @@ env
 echo
 
 echo ___COMPILER___
-_CC=$(readlink -f $(which ${CC:-cc}))
-$_CC --verbose
+CC=$(readlink -f $(which ${CC:-cc}))
+$CC --verbose
 echo
 
+echo Detecting which compiler is under use…
+case $(basename $CC) in
+	clang*)_CC=clang && CFLAGS="$CFLAGS -Wno-unused-command-line-argument";;
+	*gcc*) _CC=gcc   ;; # Asterix at start: x86_64-linux-gnu-gcc-8
+	*) echo Unsupported compiler \`$CC\' && false
+esac
+echo $_CC
+
 for std in 17 11 99 89
-do	echo | $_CC -fsyntax-only -std=c$std -xc - && break
+do	echo | $CC -fsyntax-only -std=c$std -xc - && break
 done
 echo Latest compiler c standard supported is $std
 export CFLAGS="-march=native -pipe -O3" MAKEFLAGS=-j`nproc`
@@ -26,18 +34,11 @@ export CFLAGS="-march=native -pipe -O3" MAKEFLAGS=-j`nproc`
 [ $std -gt 88 ] && LIBATOMIC=--with-libatomic
 
 printf 'Checking whether the compiler supports “-fstack-protector-strong”… '
-echo | $_CC -fsyntax-only -fstack-protector-strong -xc - &&{
+echo | $CC -fsyntax-only -fstack-protector-strong -xc - &&{
 	CFLAGS="$CFLAGS -fstack-protector-strong"
 	echo yes
 }|| echo no
 echo
-
-echo Detecting which compiler is under use…
-case $(basename $_CC) in
-	clang*)_CC=clang && CFLAGS="$CFLAGS -Wno-unused-command-line-argument";;
-	*gcc*) _CC=gcc   ;; # Asterix at start: x86_64-linux-gnu-gcc-8
-	*) echo Unsupported compiler \`$_CC\' && false
-esac
 
 _root=$PWD
 
@@ -47,23 +48,26 @@ find . -name \*.tar.gz -exec tar xzf {} \;
 
 find .. -name \*.patch -exec patch -Np0 -i{} \;
 
-# Gathering all the dependencies
-# EPOLLEXCLUSIVE not available : Linux4.5 / glibc2.24
-# reuseport is available : Linux3.9+
+if [ $(uname) = Linux ]; then
+	# Gathering all the dependencies
+	# EPOLLEXCLUSIVE not available : Linux4.5 / glibc2.24
+	# reuseport is available : Linux3.9+
 
-# Headers are required for LibreSSL & nginx
-cd kernel-headers
-make ARCH=x86_64 DESTDIR=/opt prefix= install
-cd -
+	# Headers are required for LibreSSL & nginx
+	cd kernel-headers
+	make ARCH=x86_64 DESTDIR=/opt prefix= install
+	cd -
 
-# MUSL (CANNOT BE BUILT WITH C11)
-cd musl
-./configure --prefix=/opt --enable-wrapper=$_CC #--enable-warnings
-make --silent install
-cd -
+	# MUSL (CANNOT BE BUILT WITH C11)
+	cd musl
+	./configure --prefix=/opt --enable-wrapper=$_CC #--enable-warnings
+	make --silent install
+	cd -
 
-echo ___MUSL_COMPILER___
-export CC=/opt/bin/musl-$_CC LDFLAGS=-static
+	echo ___MUSL_COMPILER___
+	CC=/opt/bin/musl-$_CC
+fi
+export LDFLAGS=-static
 $CC --verbose
 echo
 
