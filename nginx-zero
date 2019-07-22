@@ -3,11 +3,13 @@
 # PC Files???
 
 set -xe
-for p in tar gzip make cmake patch # uname nproc (coreutils)
+
+UNAME=`uname`
+[ $UNAME = Linux ] && MAKE=make || MAKE=gmake
+command -v nproc && NPROC=`nproc` || NPROC=`sysctl -n hw.ncpu`
+for p in tar gzip cmake patch $MAKE # uname nproc (coreutils)
 do ! command -v $p >/dev/null && echo Command \`$p\` missing && false
 done
-
-command -v nproc && NPROC=`nproc` || NPROC=`sysctl -n hw.ncpu`
 
 echo ___ENVIRONNEMENT___
 env
@@ -54,20 +56,20 @@ cd musl
 find ../../musl/* -exec patch -Np1 -i{} \;
 cd -
 
-if [ $(uname) = Linux ]; then
+if [ $UNAME = Linux ]; then
 	# Gathering all the dependencies
 	# EPOLLEXCLUSIVE not available : Linux4.5 / glibc2.24
 	# reuseport is available : Linux3.9+
 
 	# Headers are required for LibreSSL & nginx
 	cd kernel-headers
-	make ARCH=x86_64 DESTDIR=/opt prefix= install
+	$MAKE ARCH=x86_64 DESTDIR=/opt prefix= install
 	cd -
 
 	# MUSL (CANNOT BE BUILT WITH C11)
 	cd musl
 	./configure --prefix=/opt --enable-wrapper=$_CC #--enable-warnings
-	make --silent install
+	$MAKE --silent install
 	cd -
 
 	echo ___MUSL_COMPILER___
@@ -80,7 +82,7 @@ echo
 # JEMALLOC
 cd jemalloc-*/
 ./configure --prefix=/opt --disable-cxx CFLAGS="-std=gnu$std $CFLAGS"
-make install_lib_static
+$MAKE install_lib_static
 cd -
 
 CFLAGS="-std=c$std $CFLAGS"
@@ -89,7 +91,7 @@ LDFLAGS="$LDFLAGS -ljemalloc"
 [ -z $LIBATOMIC ] ||{
 cd libatomic_ops-*/
 ./configure --prefix=/opt --disable-docs
-make install
+$MAKE install
 cd -
 }
 
@@ -99,14 +101,14 @@ cd -
 # Therefor, I need to manually extract it
 cd pcre-*/
 ./configure --prefix=/opt --enable-jit --enable-utf --enable-unicode-properties --disable-cpp --enable-shared=0
-make install-binSCRIPTS install-libLTLIBRARIES install-nodist_includeHEADERS # The bin is required for njs
+$MAKE install-binSCRIPTS install-libLTLIBRARIES install-nodist_includeHEADERS # The bin is required for njs
 # pkgconfigDATA includeHEADERS=pcreposix
 cd -
 
 # ZLIB
 cd zlib
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt
-make zlibstatic
+$MAKE zlibstatic
 # TODO
 cp libz.a /opt/lib
 cp zlib.h zconf.h /opt/include
@@ -118,7 +120,7 @@ cd -
 cd libressl-*/
 rm include/tls.h
 env CFLAGS="$CFLAGS -std=gnu$std" cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt
-make ssl crypto
+$MAKE ssl crypto
 cmake -P include/cmake_install.cmake
 cmake -P crypto/cmake_install.cmake
 cmake -P ssl/cmake_install.cmake
@@ -179,7 +181,7 @@ env PATH="$PATH:/opt/bin" auto/configure $LIBATOMIC \
 	#--with-cpu-opt
 	#--build="nginx/$NGINX (nginx-zero)" \
 	# THE CONFIG FILE DOES NOT CONSIDER LDFLAGS
-make install
+$MAKE install
 cd -
 
 # Avoid replacing user’s config file on extraction (but keep nginx.conf.default)
