@@ -3,9 +3,11 @@
 # PC Files???
 
 set -xe
-for p in tar gzip make cmake uname nproc patch
+for p in tar gzip make cmake patch # uname nproc (coreutils)
 do ! command -v $p >/dev/null && echo Command \`$p\` missing && false
 done
+
+command -v nproc && NPROC=`nproc` || NPROC=`sysctl -n hw.ncpu`
 
 echo ___ENVIRONNEMENT___
 env
@@ -28,7 +30,7 @@ for std in 17 11 99 89
 do	echo | $CC -fsyntax-only -std=c$std -xc - && break
 done
 echo Latest compiler c standard supported is $std
-export CFLAGS="-march=native -pipe -O3 $CFLAGS" MAKEFLAGS=-j`nproc`
+export CFLAGS="-march=native -pipe -O3 $CFLAGS" MAKEFLAGS=-j$NPROC
 
 # Below C11
 [ $std -gt 88 ] && LIBATOMIC=--with-libatomic
