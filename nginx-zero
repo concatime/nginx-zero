@@ -5,7 +5,7 @@
 set -xe
 
 UNAME=`uname`
-[ $UNAME = Linux ] && SU=sudo\ --preserve-env MAKE=make || SU=doas MAKE=gmake
+[ $UNAME = Linux ] && SU='sudo env PATH=$PATH' MAKE=make || SU=doas MAKE=gmake
 command -v nproc && NPROC=`nproc` || NPROC=`sysctl -n hw.ncpu`
 for p in tar gzip cmake patch $MAKE # uname nproc (coreutils)
 do ! command -v $p && echo Command \`$p\` missing && false
