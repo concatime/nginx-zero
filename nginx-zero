@@ -4,7 +4,7 @@
 
 set -xe
 
-UNAME=`uname`
+UNAME=`uname --kernel-name`
 [ $UNAME = Linux ] && SU="sudo env PATH=$PATH" MAKE=make || SU=doas MAKE=gmake
 command -v nproc && NPROC=`nproc` || NPROC=`sysctl -n hw.ncpu`
 for p in tar gzip cmake patch $MAKE # uname nproc (coreutils)
@@ -75,7 +75,7 @@ if [ $UNAME = Linux ]; then
 	echo ___MUSL_COMPILER___
 	CC=/opt/bin/musl-$_CC
 fi
-export LDFLAGS=-static
+#export LDFLAGS=-static
 $CC --verbose
 echo
 
@@ -87,7 +87,7 @@ cd -
 
 CFLAGS="-std=c$STD $CFLAGS"
 LDFLAGS="$LDFLAGS -ljemalloc"
-export LIBRARY_PATH=/opt/lib
+export CPATH=/opt/include LIBRARY_PATH=/opt/lib
 
 [ -z $LIBATOMIC ] ||{
 cd libatomic_ops-*/
@@ -129,7 +129,9 @@ cd -
 
 # NGINX
 cd nginx
-env PATH="$PATH:/opt/bin" auto/configure $LIBATOMIC \
+[ $UNAME = OpenBSD ] || NGX_FIO=--with-file-aio
+#env PATH="$PATH:/opt/bin" auto/configure $LIBATOMIC $NGX_FIO \
+auto/configure $LIBATOMIC $NGX_FIO \
 	--prefix=/opt/nginx \
 	--pid-path=/run/nginx.pid \
 	--sbin-path=bin/nginx \
@@ -144,7 +146,6 @@ env PATH="$PATH:/opt/bin" auto/configure $LIBATOMIC \
 	--with-compat \
 	--with-stream \
 	--with-threads \
-	--with-file-aio \
 	--with-http_v2_module \
 	--with-http_ssl_module \
 	--with-stream_ssl_module \
@@ -185,6 +186,7 @@ env PATH="$PATH:/opt/bin" auto/configure $LIBATOMIC \
 $SU $MAKE install
 cd -
 
+command -v ldd && ldd /opt/nginx/bin/nginx ||:
 # Avoid replacing user’s config file on extraction (but keep nginx.conf.default)
 $SU rm /opt/nginx/conf/nginx.conf
 tar czf $_root/nginx.tar.gz -C/opt nginx
