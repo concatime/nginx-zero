@@ -2,7 +2,6 @@
 # https://docs.travis-ci.com/
 language: c
 dist: xenial
-sudo: false
 git:
   depth: false
 addons:
