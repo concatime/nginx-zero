@@ -30,16 +30,6 @@
  ngx_feature_libs=
  ngx_feature_test="int efd = 0;
 
-+++ nginx/src/os/unix/ngx_process_cycle.c
-@@ -5,6 +5,7 @@
-  */
-
-
-+#include <sys/prctl.h>
- #include <ngx_config.h>
- #include <ngx_core.h>
- #include <ngx_event.h>
-
 +++ njs/auto/feature
 @@ -36,7 +36,7 @@
 
