@@ -85,8 +85,7 @@ cd jemalloc-*/
 $SU $MAKE install_lib_static
 cd -
 
-CFLAGS="-std=c$STD $CFLAGS"
-LDFLAGS="$LDFLAGS -ljemalloc"
+PATH=/opt/bin:$PATH CFLAGS="-std=c$STD $CFLAGS" LDFLAGS="$LDFLAGS -ljemalloc"
 export CPATH=/opt/include LIBRARY_PATH=/opt/lib
 
 [ -z $LIBATOMIC ] ||{
@@ -130,7 +129,6 @@ cd -
 # NGINX
 cd nginx
 [ $UNAME = OpenBSD ] || NGX_FIO=--with-file-aio
-#env PATH="$PATH:/opt/bin" auto/configure $LIBATOMIC $NGX_FIO \
 auto/configure $LIBATOMIC $NGX_FIO \
 	--prefix=/opt/nginx \
 	--pid-path=/run/nginx.pid \
