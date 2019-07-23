@@ -4,7 +4,7 @@
 
 set -xe
 
-UNAME=`uname --kernel-name`
+UNAME=`uname -s`
 [ $UNAME = Linux ] && SU="sudo env PATH=$PATH" MAKE=make || SU=doas MAKE=gmake
 command -v nproc && NPROC=`nproc` || NPROC=`sysctl -n hw.ncpu`
 for p in tar gzip cmake patch $MAKE # uname nproc (coreutils)
