@@ -1,0 +1,22 @@
+image: openbsd/6.5
+packages:
+- cmake
+- gmake
+- jq
+sources:
+- https://github.com/concatime/nginx-zero.git
+environment:
+  CC: clang
+secrets:
+- 24bf08ca-e743-4c4f-8338-b47d47d4bfcd
+tasks:
+- build: |
+   cd nginx-zero
+   git submodule update --init --recursive
+   git rev-parse HEAD
+   ./nginx-zero
+#- deploy: >-
+#   curl -s https://api.github.com/repos/concatime/nginx-zero/releases/latest | jq .id | xargs -I{}
+#   curl 'https://uploads.github.com/repos/concatime/nginx-zero/releases/{}/assets?name=openbsd.tar.gz'
+#   -sSX POST -H@.gh_token --header 'Content-Type: application/gzip' --upload-file nginx-zero/openbsd.tar.gz
+#   -w '%{stderr}HTTP/%{http_version} %{response_code} %{size_upload} %{speed_upload}\n' | jq .browser_download_url
