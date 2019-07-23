@@ -4,10 +4,12 @@
 
 set -xe
 
+export CPATH=/opt/include LIBRARY_PATH=/opt/lib
+PATH=/opt/bin:$PATH
 UNAME=$(uname -s | tr '[:upper:]' '[:lower:]')
-[ $UNAME = linux ] && SU="sudo env PATH=$PATH" MAKE=make || SU=doas MAKE=gmake
+[ $UNAME = linux ] && SU="env PATH=$PATH" SHA=sha256sum MAKE=make || SU=doas SHA=sha256 MAKE=gmake
 command -v nproc && NPROC=`nproc` || NPROC=`sysctl -n hw.ncpu`
-for p in tar gzip cmake patch $MAKE
+for p in tar gzip cmake patch sha256sum $MAKE
 do ! command -v $p && echo Command \`$p\` missing && false
 done
 
@@ -85,8 +87,7 @@ cd jemalloc-*/
 $SU $MAKE install_lib_static
 cd -
 
-PATH=/opt/bin:$PATH CFLAGS="-std=c$STD $CFLAGS" LDFLAGS="$LDFLAGS -ljemalloc"
-export CPATH=/opt/include LIBRARY_PATH=/opt/lib
+CFLAGS="-std=c$STD $CFLAGS" LDFLAGS="$LDFLAGS -ljemalloc"
 
 [ -z $LIBATOMIC ] ||{
 cd libatomic_ops-*/
@@ -188,3 +189,4 @@ command -v ldd && ldd /opt/nginx/bin/nginx ||:
 # Avoid replacing user’s config file on extraction (but keep nginx.conf.default)
 $SU rm /opt/nginx/conf/nginx.conf
 tar czf $_root/$UNAME.tar.gz -C /opt nginx
+$SHA $_root/$UNAME.tar.gz
