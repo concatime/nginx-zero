@@ -4,11 +4,11 @@
 
 set -xe
 
-export CPATH=/opt/include LIBRARY_PATH=/opt/lib
 PATH=/opt/bin:$PATH
 UNAME=$(uname -s | tr '[:upper:]' '[:lower:]')
-[ $UNAME = linux ] && SU="env PATH=$PATH" SHA=sha256sum MAKE=make || SU=doas SHA=sha256 MAKE=gmake
+[ $UNAME = linux ] && SU="sudo env PATH=$PATH" SHA=sha256sum MAKE=make || SU=doas SHA=sha256 MAKE=gmake
 command -v nproc && NPROC=`nproc` || NPROC=`sysctl -n hw.ncpu`
+export C_INCLUDE_PATH=/opt/include LIBRARY_PATH=/opt/lib MAKEFLAGS=-j$NPROC
 for c in tar gzip cmake patch $SHA $MAKE
 do ! command -v $c
 done
@@ -34,7 +34,7 @@ for STD in 17 11 99 89
 do	echo | $CC -fsyntax-only -std=c$STD -xc - && break
 done
 echo Latest compiler c standard supported is $STD
-export CFLAGS="-march=native -pipe -O3 $CFLAGS" MAKEFLAGS=-j$NPROC
+export CFLAGS="-march=native -pipe -O3 $CFLAGS"
 
 # Below C11
 [ $STD -gt 88 ] && LIBATOMIC=--with-libatomic
@@ -77,7 +77,6 @@ if [ $UNAME = linux ]; then
 	echo ___MUSL_COMPILER___
 	CC=/opt/bin/musl-$_CC
 fi
-#export LDFLAGS=-static
 $CC --verbose
 echo
 
@@ -87,7 +86,8 @@ cd jemalloc-*/
 $SU $MAKE install_lib_static
 cd -
 
-CFLAGS="-std=c$STD $CFLAGS" LDFLAGS="$LDFLAGS -ljemalloc"
+CFLAGS="-std=c$STD $CFLAGS"
+export LDFLAGS=-ljemalloc
 
 [ -z $LIBATOMIC ] ||{
 cd libatomic_ops-*/
