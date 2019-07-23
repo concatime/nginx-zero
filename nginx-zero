@@ -187,4 +187,4 @@ cd -
 command -v ldd && ldd /opt/nginx/bin/nginx ||:
 # Avoid replacing user’s config file on extraction (but keep nginx.conf.default)
 $SU rm /opt/nginx/conf/nginx.conf
-tar czf $_root/nginx.tar.gz -C/opt nginx
+tar czf $_root/nginx.tar.gz -C /opt nginx
