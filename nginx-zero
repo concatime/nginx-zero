@@ -4,10 +4,10 @@
 
 set -xe
 
-UNAME=`uname -s`
-[ $UNAME = Linux ] && SU="sudo env PATH=$PATH" MAKE=make || SU=doas MAKE=gmake
+UNAME=$(uname -s | tr '[:upper:]' '[:lower:]')
+[ $UNAME = linux ] && SU="sudo env PATH=$PATH" MAKE=make || SU=doas MAKE=gmake
 command -v nproc && NPROC=`nproc` || NPROC=`sysctl -n hw.ncpu`
-for p in tar gzip cmake patch $MAKE # uname nproc (coreutils)
+for p in tar gzip cmake patch $MAKE
 do ! command -v $p && echo Command \`$p\` missing && false
 done
 
@@ -56,7 +56,7 @@ cd musl
 find ../../musl/* -exec patch -Np1 -i{} \;
 cd -
 
-if [ $UNAME = Linux ]; then
+if [ $UNAME = linux ]; then
 	# Gathering all the dependencies
 	# EPOLLEXCLUSIVE not available : Linux4.5 / glibc2.24
 	# reuseport is available : Linux3.9+
@@ -128,7 +128,7 @@ cd -
 
 # NGINX
 cd nginx
-[ $UNAME = OpenBSD ] || NGX_FIO=--with-file-aio
+[ $UNAME = openbsd ] || NGX_FIO=--with-file-aio
 auto/configure $LIBATOMIC $NGX_FIO \
 	--prefix=/opt/nginx \
 	--pid-path=/run/nginx.pid \
@@ -187,4 +187,4 @@ cd -
 command -v ldd && ldd /opt/nginx/bin/nginx ||:
 # Avoid replacing user’s config file on extraction (but keep nginx.conf.default)
 $SU rm /opt/nginx/conf/nginx.conf
-tar czf $_root/nginx.tar.gz -C /opt nginx
+tar czf $_root/$UNAME.tar.gz -C /opt nginx
