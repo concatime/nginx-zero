@@ -101,7 +101,7 @@ cd -
 # PCRE without automake if I extract and commit
 # Therefor, I need to manually extract it
 cd pcre-*/
-./configure --prefix=/opt --enable-jit --enable-utf --enable-unicode-properties --disable-cpp --enable-shared=0 || cat config.log
+./configure --prefix=/opt --enable-jit --enable-utf --enable-unicode-properties --disable-cpp --enable-shared=0
 $SU $MAKE install-binSCRIPTS install-libLTLIBRARIES install-nodist_includeHEADERS # The bin is required for njs
 # pkgconfigDATA includeHEADERS=pcreposix
 cd -
