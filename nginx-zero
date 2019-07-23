@@ -9,8 +9,8 @@ PATH=/opt/bin:$PATH
 UNAME=$(uname -s | tr '[:upper:]' '[:lower:]')
 [ $UNAME = linux ] && SU="env PATH=$PATH" SHA=sha256sum MAKE=make || SU=doas SHA=sha256 MAKE=gmake
 command -v nproc && NPROC=`nproc` || NPROC=`sysctl -n hw.ncpu`
-for p in tar gzip cmake patch sha256sum $MAKE
-do ! command -v $p && echo Command \`$p\` missing && false
+for c in tar gzip cmake patch $SHA $MAKE
+do ! command -v $c
 done
 
 echo ___ENVIRONNEMENT___
