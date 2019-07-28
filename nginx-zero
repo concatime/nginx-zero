@@ -130,15 +130,16 @@ cd -
 # NGINX
 cd nginx
 [ $UNAME = openbsd ] || NGX_FIO=--with-file-aio
+[ $UNAME = linux] && NGX_GRP=www-data || NGX_GRP=www
 auto/configure $LIBATOMIC $NGX_FIO \
 	--prefix=/opt/nginx \
-	--pid-path=/run/nginx.pid \
+	--pid-path=/var/run/nginx.pid \
 	--sbin-path=bin/nginx \
 	--modules-path=modules \
 	--conf-path=conf/nginx.conf \
 	--error-log-path=logs/error.log \
 	--lock-path=logs/nginx.lock \
-	--group=www-data \
+	--group=$NGX_GRP \
 	--add-module=../njs/nginx \
 	--add-module=../ngx-brotli \
 	--add-module=../nginx-length-hiding-filter-module \
