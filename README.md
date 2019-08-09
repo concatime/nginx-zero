@@ -4,15 +4,17 @@
 [![Build Status](https://travis-ci.org/concatime/nginx-zero.svg?branch=master)](//travis-ci.org/concatime/nginx-zero)
 [![builds.sr.ht status](https://builds.sr.ht/~concatime/nginx-zero.svg)](//builds.sr.ht/~concatime/nginx-zero)
 
-Package       | Version   | Latest available
-:------------:|-----------|-
-NGiИX         | 1.17.2    | [![](https://repology.org/badge/latest-versions/nginx.svg)](//nginx.org/en/CHANGES)
-MUSL          | 1.1.23    | [![](https://repology.org/badge/latest-versions/musl.svg)](//git.musl-libc.org/cgit/musl/tree/WHATSNEW)
-PCRE          | 8.43      | [![](https://repology.org/badge/latest-versions/pcre.svg)](//pcre.org/original/changelog.txt)
-ZLIB          | 1.2.11    | [![](https://repology.org/badge/latest-versions/zlib.svg)](//zlib.net/ChangeLog.txt)
-LIBRESSL      | ~~2.9.0~~ | [![](https://repology.org/badge/latest-versions/libressl.svg)](//raw.githubusercontent.com/libressl-portable/portable/master/ChangeLog)
-JEMALLOC      | 5.2.0     | [![](https://repology.org/badge/latest-versions/jemalloc.svg)](//raw.githubusercontent.com/jemalloc/jemalloc/master/ChangeLog)
-LIBATOMIC\_OPS| 7.6.10    | [![](https://repology.org/badge/latest-versions/libatomic-ops.svg)](//raw.githubusercontent.com/ivmai/libatomic_ops/blob/master/ChangeLog)
+Package       | Version | Latest available
+:------------:|---------|-
+NGiИX         | 1.17.2  | [![](https://repology.org/badge/latest-versions/nginx.svg)](//nginx.org/en/CHANGES)
+MUSL          | 1.1.23  | [![](https://repology.org/badge/latest-versions/musl.svg)](//git.musl-libc.org/cgit/musl/tree/WHATSNEW)
+PCRE          | 8.43    | [![](https://repology.org/badge/latest-versions/pcre.svg)](//pcre.org/original/changelog.txt)
+ZLIB          | 1.2.11  | [![](https://repology.org/badge/latest-versions/zlib.svg)](//zlib.net/ChangeLog.txt)
+LIBRESSL      | 3.0.0\* | [![](https://repology.org/badge/latest-versions/libressl.svg)](//raw.githubusercontent.com/libressl-portable/portable/master/ChangeLog)
+JEMALLOC      | 5.2.0   | [![](https://repology.org/badge/latest-versions/jemalloc.svg)](//raw.githubusercontent.com/jemalloc/jemalloc/master/ChangeLog)
+LIBATOMIC\_OPS| 7.6.10  | [![](https://repology.org/badge/latest-versions/libatomic-ops.svg)](//raw.githubusercontent.com/ivmai/libatomic_ops/blob/master/ChangeLog)
+
+\* OCSP stapling [broken](//github.com/libressl-portable/portable/issues/532).
 
 ### Modules
 Package                        | Version | Latest available
