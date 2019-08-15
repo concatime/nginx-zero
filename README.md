@@ -11,7 +11,7 @@ MUSL          | 1.1.23  | [![](https://repology.org/badge/latest-versions/musl.s
 PCRE          | 8.43    | [![](https://repology.org/badge/latest-versions/pcre.svg)](//pcre.org/original/changelog.txt)
 ZLIB          | 1.2.11  | [![](https://repology.org/badge/latest-versions/zlib.svg)](//zlib.net/ChangeLog.txt)
 LIBRESSL      | 3.0.0\* | [![](https://repology.org/badge/latest-versions/libressl.svg)](//raw.githubusercontent.com/libressl-portable/portable/master/ChangeLog)
-JEMALLOC      | 5.2.0   | [![](https://repology.org/badge/latest-versions/jemalloc.svg)](//raw.githubusercontent.com/jemalloc/jemalloc/master/ChangeLog)
+JEMALLOC      | 5.2.1   | [![](https://repology.org/badge/latest-versions/jemalloc.svg)](//raw.githubusercontent.com/jemalloc/jemalloc/master/ChangeLog)
 LIBATOMIC\_OPS| 7.6.10  | [![](https://repology.org/badge/latest-versions/libatomic-ops.svg)](//raw.githubusercontent.com/ivmai/libatomic_ops/blob/master/ChangeLog)
 
 \* OCSP stapling [broken](//github.com/libressl-portable/portable/issues/532).
@@ -23,7 +23,7 @@ NJS                            | 0.3.3   | [![](https://img.shields.io/github/ta
 Brotli (eustas fork)           | master  | [![](https://img.shields.io/github/tag/eustas/ngx_brotli.svg)](//github.com/eustas/ngx_brotli/releases)
 Length Hiding Filter (my fork) | master  | [![](https://img.shields.io/github/tag/concatime/nginx-length-hiding-filter-module.svg)](//github.com/concatime/nginx-length-hiding-filter-module/releases)
 
-
+Jemalloc provides Bzip tarballs. I convert them with `bzcat IN.tar.bz2 | gzip --best > OUT.tar.gz`.
 By default, jemalloc is now disabled since it causes boilerplate.
 
 The script (`nginx-zero`) requires:
