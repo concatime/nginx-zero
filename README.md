@@ -10,11 +10,11 @@ NGiИX         | 1.17.3  | [![](https://repology.org/badge/latest-versions/nginx
 MUSL          | 1.1.23  | [![](https://repology.org/badge/latest-versions/musl.svg)](//git.musl-libc.org/cgit/musl/tree/WHATSNEW)
 PCRE          | 8.43    | [![](https://repology.org/badge/latest-versions/pcre.svg)](//pcre.org/original/changelog.txt)
 ZLIB          | 1.2.11  | [![](https://repology.org/badge/latest-versions/zlib.svg)](//zlib.net/ChangeLog.txt)
-LIBRESSL      | 3.0.0\* | [![](https://repology.org/badge/latest-versions/libressl.svg)](//raw.githubusercontent.com/libressl-portable/portable/master/ChangeLog)
+LIBRESSL      | 2.9.0\* | [![](https://repology.org/badge/latest-versions/libressl.svg)](//raw.githubusercontent.com/libressl-portable/portable/master/ChangeLog)
 JEMALLOC      | 5.2.1   | [![](https://repology.org/badge/latest-versions/jemalloc.svg)](//raw.githubusercontent.com/jemalloc/jemalloc/master/ChangeLog)
 LIBATOMIC\_OPS| 7.6.10  | [![](https://repology.org/badge/latest-versions/libatomic-ops.svg)](//raw.githubusercontent.com/ivmai/libatomic_ops/blob/master/ChangeLog)
 
-\* OCSP stapling [broken](//github.com/libressl-portable/portable/issues/532).
+\* OCSP stapling [broken](//github.com/libressl-portable/portable/issues/532) on `2.9.1`, `2.9.2` & `3.0.0`.
 
 ### Modules
 Package                        | Version | Latest available
