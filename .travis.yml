@@ -1,5 +1,7 @@
+# Travis build integration.
+# https://docs.travis-ci.com/
 language: c
-dist: bionic
+dist: xenial
 git:
   depth: false
 addons:
@@ -9,7 +11,7 @@ addons:
       retries: true
     sources:
     - ubuntu-toolchain-r-test
-    - llvm-toolchain-bionic-9
+    - llvm-toolchain-xenial-9
     packages:
     - gcc-{4.4,9}
     - clang-{3.5,9}
