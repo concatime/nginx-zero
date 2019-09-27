@@ -130,10 +130,10 @@ cd -
 # NGINX
 cd nginx
 [ $UNAME = openbsd ] || NGX_FIO=--with-file-aio
-[ $UNAME = linux] && NGX_GRP=www-data || NGX_GRP=www
+[ $UNAME = linux ] && NGX_GRP=www-data || NGX_GRP=www NGX_VAR=/var
 auto/configure $LIBATOMIC $NGX_FIO \
 	--prefix=/opt/nginx \
-	--pid-path=/var/run/nginx.pid \
+	--pid-path=$NGX_VAR/run/nginx.pid \
 	--sbin-path=bin/nginx \
 	--modules-path=modules \
 	--conf-path=conf/nginx.conf \
