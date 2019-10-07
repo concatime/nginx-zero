@@ -13,9 +13,6 @@
 [submodule "deps/njs"]
 	path = deps/njs
 	url = https://github.com/nginx/njs.git
-[submodule "deps/ngx-brotli"]
-	path = deps/ngx-brotli
-	url = https://github.com/eustas/ngx_brotli.git
 [submodule "deps/nginx-length-hiding-filter-module"]
 	path = deps/nginx-length-hiding-filter-module
 	url = https://github.com/concatime/nginx-length-hiding-filter-module.git
