@@ -19,7 +19,7 @@ LIBATOMIC\_OPS| 7.6.10  | [![](https://repology.org/badge/latest-versions/libato
 ### Modules
 Package                        | Version | Latest available
 :-----------------------------:|---------|-
-NJS                            | 0.3.5   | [![](https://img.shields.io/github/tag/nginx/njs.svg)](//nginx.org/en/docs/njs/changes.html)
+NJS                            | 0.3.6   | [![](https://img.shields.io/github/tag/nginx/njs.svg)](//nginx.org/en/docs/njs/changes.html)
 Brotli                         | master  | [![](https://img.shields.io/github/tag/google/ngx_brotli.svg)](//github.com/google/ngx_brotli/releases)
 Length Hiding Filter (my fork) | master  | [![](https://img.shields.io/github/tag/concatime/nginx-length-hiding-filter-module.svg)](//github.com/concatime/nginx-length-hiding-filter-module/releases)
 
