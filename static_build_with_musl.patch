@@ -29,14 +29,3 @@
  ngx_feature_path=
  ngx_feature_libs=
  ngx_feature_test="int efd = 0;
-
-+++ njs/auto/feature
-@@ -36,7 +36,7 @@
-
-
- nxt_test="$CC $CFLAGS $NXT_CFLAGS $NXT_CC_OPT $NXT_TEST_CFLAGS \
--          $nxt_feature_inc_path -o $NXT_AUTOTEST $NXT_AUTOTEST.c \
-+          $nxt_feature_inc_path -static -o $NXT_AUTOTEST $NXT_AUTOTEST.c \
-           $NXT_LD_OPT $NXT_TEST_LIBS $nxt_feature_libs"
-
- # /bin/sh -c "(...)" is to intercept "Killed", "Abort trap",
