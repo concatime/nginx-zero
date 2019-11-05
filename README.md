@@ -41,4 +41,4 @@ To clone:
 To speed-up the clone process, add `-j` with the number of threads.
 
 To install, download the release file called `nginx.tar.gz`, and then
-`sudo tar xf nginx.tar.gz -C/opt`
+`sudo tar xzf nginx.tar.gz -C /opt`
