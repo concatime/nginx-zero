@@ -4,9 +4,9 @@
 
 set -xe
 
-PATH=/opt/bin:$PATH
-UNAME=$(uname -s | tr '[:upper:]' '[:lower:]')
-[ $UNAME = linux ] && SU="sudo env PATH=$PATH" SHA=sha256sum MAKE=make || SU=doas SHA=sha256 MAKE=gmake
+export PATH="/opt/bin:${PATH}"
+UNAME="$(uname -s | tr '[:upper:]' '[:lower:]')"
+[ "$UNAME" = linux ] && SU="sudo env PATH=${PATH}" SHA=sha256sum MAKE=make || SU=doas SHA=sha256 MAKE=gmake
 command -v nproc && NPROC=`nproc` || NPROC=`sysctl -n hw.ncpu`
 export C_INCLUDE_PATH=/opt/include LIBRARY_PATH=/opt/lib MAKEFLAGS=-j$NPROC
 for c in tar gzip cmake patch $SHA $MAKE
@@ -18,72 +18,72 @@ env
 echo
 
 echo ___COMPILER___
-CC=$(readlink -f $(which ${CC:-cc}))
-$CC --verbose
+CC="$(readlink -f "$(which ${CC:-cc})")"
+"$CC" --verbose
 echo
 
 echo Detecting which compiler is under use…
-case $(basename $CC) in
+case "$(basename "$CC")" in
 	clang*)_CC=clang && CFLAGS='-Wno-string-plus-int -Wno-unknown-pragmas -Wno-ignored-attributes -Wno-unused-command-line-argument';;
 	*gcc*) _CC=gcc   ;; # Asterix at start: x86_64-linux-gnu-gcc-8
-	*) echo Unsupported compiler \`$CC\' && false
+	*) echo "Unsupported compiler $CC" && false
 esac
 echo $_CC
 
 for STD in 17 11 99 89
-do	echo | $CC -fsyntax-only -std=c$STD -xc - && break
+do	echo | "$CC" -fsyntax-only -std="c${STD}" -xc - && break
 done
-echo Latest compiler c standard supported is $STD
+echo "Latest compiler c standard supported is $STD"
 export CFLAGS="-march=native -pipe -O3 $CFLAGS"
 
 # Below C11
 [ $STD -gt 88 ] && LIBATOMIC=--with-libatomic
 
 printf 'Checking whether the compiler supports “-fstack-protector-strong”… '
-echo | $CC -fsyntax-only -fstack-protector-strong -xc - &&{
+echo | "$CC" -fsyntax-only -fstack-protector-strong -xc - &&{
 	CFLAGS="$CFLAGS -fstack-protector-strong"
 	echo yes
 }|| echo no
 echo
 
-_root=$PWD
+_root="$PWD"
 
 cd deps
 
-find . -name \*.tar.gz -exec tar xzf {} \;
+find . -name '*.tar.gz' -exec tar xzf {} \;
 
-find .. -maxdepth 1 -name \*.patch -exec patch -Np0 -i{} \;
+find .. -maxdepth 1 -name '*.patch' -exec patch -Np0 -i{} \;
 
-cd musl
-find ../../musl/* -exec patch -Np1 -i{} \;
-cd -
+if [ "$UNAME" = linux ]; then
+	cd musl
+	find '../../musl/*' -exec patch -Np1 -i{} \;
+	cd -
 
-if [ $UNAME = linux ]; then
 	# Gathering all the dependencies
 	# EPOLLEXCLUSIVE not available : Linux4.5 / glibc2.24
 	# reuseport is available : Linux3.9+
 
 	# Headers are required for LibreSSL & nginx
 	cd kernel-headers
-	$SU $MAKE ARCH=x86_64 DESTDIR=/opt prefix= install
+	"$SU" "$MAKE" ARCH=x86_64 DESTDIR=/opt prefix= install
 	cd -
 
 	# MUSL (CANNOT BE BUILT WITH C11)
 	cd musl
-	./configure --prefix=/opt --enable-wrapper=$_CC #--enable-warnings
+	./configure --prefix=/opt --enable-wrapper="$_CC" #--enable-warnings
 	$SU $MAKE --silent install
 	cd -
 
 	echo ___MUSL_COMPILER___
-	CC=/opt/bin/musl-$_CC
+	CC="/opt/bin/musl-${_CC}"
 fi
-$CC --verbose
+"$CC" --verbose
 echo
 
 # JEMALLOC
 cd "$(find . -maxdepth 1 -type d -name 'jemalloc-*')"
-./configure --prefix=/opt --disable-cxx CFLAGS="-std=gnu$STD $CFLAGS"
-$SU $MAKE install_lib_static
+./configure --prefix=/opt --disable-cxx CFLAGS="-std=gnu${STD} ${CFLAGS}"
+"$SU" "$MAKE" install_lib_static
 cd -
 
 CFLAGS="-std=c$STD $CFLAGS"
@@ -92,7 +92,7 @@ export LDFLAGS=-ljemalloc
 [ -z $LIBATOMIC ] ||{
 cd "$(find . -maxdepth 1 -type d -name 'libatomic_ops-*')"
 ./configure --prefix=/opt --disable-docs
-$SU $MAKE install
+"$SU" "$MAKE" install
 cd -
 }
 
@@ -100,46 +100,49 @@ cd -
 # I have a bug which does not aloud me to make
 # PCRE without automake if I extract and commit
 # Therefor, I need to manually extract it
-cd "$(find . -maxdepth 1 -type d -name 'pcre-*')"
-./configure --prefix=/opt --enable-jit --enable-utf --enable-unicode-properties --disable-cpp --enable-shared=0
-$SU $MAKE install-binSCRIPTS install-libLTLIBRARIES install-nodist_includeHEADERS # The bin is required for njs
+#cd "$(find . -maxdepth 1 -type d -name 'pcre-*')"
+#./configure --prefix=/opt --enable-jit --enable-utf --enable-unicode-properties --disable-cpp --enable-shared=0
+#"$SU" "$MAKE" install-binSCRIPTS install-libLTLIBRARIES install-nodist_includeHEADERS # The bin is required for njs
 # pkgconfigDATA includeHEADERS=pcreposix
-cd -
+#cd -
 
 # ZLIB
-cd zlib
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt
-$MAKE zlibstatic
-# TODO
-$SU cp libz.a /opt/lib
-$SU cp zlib.h zconf.h /opt/include
-cd -
+#cd zlib
+#cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt
+#"$MAKE" zlibstatic
+#"$SU" cp libz.a /opt/lib
+#"$SU" cp zlib.h zconf.h /opt/include
+#cd -
 
 # LibreSSL (REQUIRES ASM)
 # LibreSSL from Git requires automake, autoconf, etc.
 # https://github.com/libressl-portable/portable/tree/master#prerequisites-when-building-from-a-git-checkout
 cd "$(find . -maxdepth 1 -type d -name 'libressl-*')"
 rm include/tls.h
-env CFLAGS="$CFLAGS -std=gnu$STD" cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt
-$MAKE ssl crypto
-$SU cmake -P include/cmake_install.cmake
-$SU cmake -P crypto/cmake_install.cmake
-$SU cmake -P ssl/cmake_install.cmake
+env CFLAGS="$CFLAGS -std=gnu${STD}" cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt
+"$MAKE" ssl crypto
+"$SU" cmake -P include/cmake_install.cmake
+"$SU" cmake -P crypto/cmake_install.cmake
+"$SU" cmake -P ssl/cmake_install.cmake
 cd -
 
 # NGINX
 cd nginx
-[ $UNAME = openbsd ] || NGX_FIO=--with-file-aio
-[ $UNAME = linux ] && NGX_GRP=www-data || NGX_GRP=www NGX_VAR=/var
-auto/configure $LIBATOMIC $NGX_FIO \
+[ "$UNAME" = openbsd ] || NGX_FIO=--with-file-aio
+[ "$UNAME" = linux ] && NGX_GRP=www-data || NGX_GRP=www NGX_VAR=/var
+auto/configure "$LIBATOMIC" "$NGX_FIO" \
 	--prefix=/opt/nginx \
-	--pid-path=$NGX_VAR/run/nginx.pid \
+	--pid-path="${NGX_VAR}/run/nginx.pid" \
 	--sbin-path=bin/nginx \
 	--modules-path=modules \
 	--conf-path=conf/nginx.conf \
 	--error-log-path=logs/error.log \
 	--lock-path=logs/nginx.lock \
-	--group=$NGX_GRP \
+	--group="$NGX_GRP" \
+	--with-pcre="$(find .. -maxdepth 1 -type d -name 'pcre-*')" \
+	--with-pcre-opt='--enable-utf --enable-unicode-properties --disable-cpp' \
+	--with-pcre-jit \
+	--with-zlib='../zlib' \
 	--add-module=../njs/nginx \
 	--add-module=../ngx-brotli \
 	--add-module=../nginx-length-hiding-filter-module \
@@ -180,11 +183,11 @@ auto/configure $LIBATOMIC $NGX_FIO \
 	#--with-cpu-opt
 	#--build="nginx/$NGINX (nginx-zero)" \
 	# THE CONFIG FILE DOES NOT CONSIDER LDFLAGS
-$SU $MAKE install
+"$SU" "$MAKE" install
 cd -
 
 command -v ldd && ldd /opt/nginx/bin/nginx ||:
 # Avoid replacing user’s config file on extraction (but keep nginx.conf.default)
-$SU rm /opt/nginx/conf/nginx.conf
-tar czf $_root/$UNAME.tar.gz -C /opt nginx
-$SHA $_root/$UNAME.tar.gz
+"$SU" rm /opt/nginx/conf/nginx.conf
+tar czf "${_root}/${UNAME}.tar.gz" -C /opt nginx
+"$SHA" "${_root}/${UNAME}.tar.gz"
