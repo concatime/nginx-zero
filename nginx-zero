@@ -127,6 +127,7 @@ env CFLAGS="$CFLAGS -std=gnu${STD}" cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INS
 cd -
 
 # NGINX
+# TODO: --without-pcre
 cd nginx
 [ "$UNAME" = openbsd ] || NGX_FIO=--with-file-aio
 [ "$UNAME" = linux ] && NGX_GRP=www-data || NGX_GRP=www NGX_VAR=/var
@@ -152,29 +153,30 @@ auto/configure "$LIBATOMIC" "$NGX_FIO" \
 	--with-http_v2_module \
 	--with-http_ssl_module \
 	--with-stream_ssl_module \
-	--without-http_userid_module \
+	--without-http_browser_module \
+	--without-http_fastcgi_module \
 	--without-http_geo_module \
 	--without-http_map_module \
-	--without-http_split_clients_module \
-	--without-http_fastcgi_module \
+	--without-http_rewrite_module \
 	--without-http_scgi_module \
-	--without-http_browser_module \
+	--without-http_split_clients_module \
 	--without-http_upstream_hash_module \
 	--without-http_upstream_ip_hash_module \
-	--without-http_upstream_least_conn_module \
 	--without-http_upstream_keepalive_module \
+	--without-http_upstream_least_conn_module \
 	--without-http_upstream_zone_module \
-	--without-select_module \
-	--without-poll_module \
-	--without-mail_pop3_module \
+	--without-http_userid_module \
 	--without-mail_imap_module \
+	--without-mail_pop3_module \
 	--without-mail_smtp_module \
-	--without-stream_limit_conn_module \
+	--without-poll_module \
+	--without-select_module \
 	--without-stream_access_module \
 	--without-stream_geo_module \
+	--without-stream_limit_conn_module \
 	--without-stream_map_module \
-	--without-stream_split_clients_module \
 	--without-stream_return_module \
+	--without-stream_split_clients_module \
 	--without-stream_upstream_hash_module \
 	--without-stream_upstream_least_conn_module \
 	--without-stream_upstream_zone_module \
