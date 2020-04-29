@@ -23,13 +23,14 @@ NJS                            | 0.3.6   | [![](https://img.shields.io/github/ta
 Brotli                         | master  | [![](https://img.shields.io/github/tag/google/ngx_brotli.svg)](//github.com/google/ngx_brotli/releases)
 Length Hiding Filter (my fork) | master  | [![](https://img.shields.io/github/tag/concatime/nginx-length-hiding-filter-module.svg)](//github.com/concatime/nginx-length-hiding-filter-module/releases)
 
-Jemalloc provides Bzip tarballs. I convert them with `bzcat IN.tar.bz2 | gzip --best > OUT.tar.gz`.
+Jemalloc provides Bzip tarballs. I convert them with `bzcat < jemalloc.tar.bz2 | gzip --best > jemalloc.tar.gz`.
 By default, jemalloc is now disabled since it causes boilerplate.
 
 The script (`nginx-zero`) requires:
  - POSIX sh
  - gcc or clang `>=3.5` (otherwise, `ld: cannot find -l-user-{start,end}`)
- - tar (+gzip)
+ - tar
+ - gzip
  - git
  - make
  - cmake
